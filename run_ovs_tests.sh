@@ -2,9 +2,8 @@
 
 # script to kick off OVS tests 
 
-# First update and check in kernel/networking/openvswitch/common/package_list.sh
-# Confirm that the target tests to be run are uncommented in /home/ralongi/inf_ralongi/Documents/ovs_testing/exec_my_ovs_tests_template.sh
-# Confirm that the correct test is uncommented in /home/ralongi/inf_ralongi/Documents/ovs_testing/exec_topo.sh, exec_ovs_memory_leak_soak.sh
+# set location of your git repo:
+git_home=${git_home:-~/git/my_fork}
 
 # requires user input for FDP relase, RHEL version and FDP stream
 # example syntax: run_ovs_tests.sh 21e 8.4 2.13
@@ -26,7 +25,7 @@ if [[ $# -lt 3 ]] || [[ $1 = "-h" ]] || [[ $1 = "--help" ]]	|| [[ $1 = "-?" ]]; 
 fi
 
 # Make sure local git is up to date
-pushd /home/ralongi/git/my_fork/kernel/networking
+pushd "$git_home"/kernel/networking
 git status | grep 'working tree clean' || git pull > /dev/null
 popd
 
@@ -39,16 +38,16 @@ export RHEL_VER_MAJOR=$(echo $RHEL_VER | awk -F "." '{print $1}')
 export FDP_STREAM=${FDP_STREAM:-"$3"}
 export FDP_STREAM2=$(echo $FDP_STREAM | tr -d '.')
 if [[ $FDP_STREAM2 -gt 213 ]]; then
-	YEAR=$(grep -i ovn ~/fdp_package_list.sh | grep $FDP_RELEASE | awk -F "_" '{print $3}' | grep -v 213 | tail -n1)
+	YEAR=$(grep -i ovn fdp_package_list.sh | grep $FDP_RELEASE | awk -F "_" '{print $3}' | grep -v 213 | tail -n1)
 fi
 
 get_starting_packages()
 {
 	$dbg_flag
-    starting_stream=$(grep OVS$FDP_STREAM2 ~/fdp_package_list.sh | grep RHEL$RHEL_VER_MAJOR | egrep -vi 'python|tcpdump' | tail -n2 | head -n1 | awk -F "_" '{print $2}')
+    starting_stream=$(grep OVS$FDP_STREAM2 fdp_package_list.sh | grep RHEL$RHEL_VER_MAJOR | egrep -vi 'python|tcpdump' | tail -n2 | head -n1 | awk -F "_" '{print $2}')
     
-    export STARTING_RPM_OVS=$(grep "$starting_stream" ~/fdp_package_list.sh | grep OVS$FDP_STREAM2 | grep RHEL$RHEL_VER_MAJOR | egrep -vi 'python|tcpdump' | awk -F "=" '{print $2}')
-    export STARTING_RPM_OVS_SELINUX_EXTRA_POLICY=$(grep "$starting_stream" ~/fdp_package_list.sh | grep -i selinux | grep RHEL$RHEL_VER_MAJOR | awk -F "=" '{print $NF}')
+    export STARTING_RPM_OVS=$(grep "$starting_stream" fdp_package_list.sh | grep OVS$FDP_STREAM2 | grep RHEL$RHEL_VER_MAJOR | egrep -vi 'python|tcpdump' | awk -F "=" '{print $2}')
+    export STARTING_RPM_OVS_SELINUX_EXTRA_POLICY=$(grep "$starting_stream" fdp_package_list.sh | grep -i selinux | grep RHEL$RHEL_VER_MAJOR | awk -F "=" '{print $NF}')
 
     echo "STARTING_RPM_OVS: $STARTING_RPM_OVS"
     echo "STARTING_RPM_OVS_SELINUX_EXTRA_POLICY: $STARTING_RPM_OVS_SELINUX_EXTRA_POLICY"
@@ -56,7 +55,7 @@ get_starting_packages()
 
 get_starting_packages
 
-pushd /home/ralongi/github/tools/ovs_testing
+#pushd /home/ralongi/github/tools/ovs_testing
 /bin/cp -f exec_my_ovs_tests_template.sh exec_my_ovs_tests.sh
 sed -i "s/FDP_RELEASE_VALUE/$FDP_RELEASE/g" exec_my_ovs_tests.sh
 sed -i "s/RHEL_VER_VALUE/$RHEL_VER/g" exec_my_ovs_tests.sh

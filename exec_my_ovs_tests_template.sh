@@ -24,9 +24,9 @@ if [[ $brew_build ]]; then export brew_build_cmd="-B $brew_build"; fi
 
 # Script to execute all of my ovs tests
 
-source ~/fdp_package_list.sh > /dev/null
+source fdp_package_list.sh > /dev/null
 
-. ~/get_zstream_compose_function.sh
+. get_zstream_compose_function.sh
 
 use_hpe_synergy=${use_hpe_synergy:-"no"}
 
@@ -42,11 +42,8 @@ get_beaker_compose_id()
 
     rhel_minor_ver=$1
     rhel_major_ver=$(echo $rhel_minor_ver | awk -F "." '{print $1}')
-    #if [[ $(echo $rhel_minor_ver | awk -F "." '{print $1}') == "8" ]]; then
-    #	rhel_minor_ver=$rhel_minor_ver".0"
-    #fi
 
-    source ~/.bash_profile
+    source .bash_profile
     gvar -v > /dev/null
     if [[ $? -ne 0 ]]; then
 	    pushd ~
@@ -339,12 +336,12 @@ export BONDING_CPU_TESTS="ovs_test_bond_active_backup ovs_test_bond_set_active_s
 export GRE_IPV6_TESTS="ovs_test_gre_ipv6 ovs_test_gre1_ipv6 ovs_test_gre_flow_ipv6 ovs_test_vlan_gre_ipv6 ovs_test_vlan_gre1_ipv6 ovs_test_vm_gre_ipv6 ovs_test_vm_gre1_ipv6 ovs_test_vm_gre_flow_ipv6 ovs_test_vm_vlan_gre_ipv6 ovs_test_vm_vlan_gre1_ipv6"
 
 # Insert $FDP release into exec_perf_ci.sh and exec_endurance.sh
-sedeasy "FDP_RELEASE_VALUE" "$FDP_RELEASE" ~/github/tools/ovs_testing/exec_perf_ci.sh
-sedeasy "FDP_RELEASE_VALUE" "$FDP_RELEASE" ~/github/tools/ovs_testing/exec_endurance.sh
+#sedeasy "FDP_RELEASE_VALUE" "$FDP_RELEASE" ~/github/tools/ovs_testing/exec_perf_ci.sh
+#sedeasy "FDP_RELEASE_VALUE" "$FDP_RELEASE" ~/github/tools/ovs_testing/exec_endurance.sh
 
 #pushd /home/ralongi/Documents/ovs_testing
 #pushd /home/ralongi/global_docs/ovs_testing
-pushd /home/ralongi/github/tools/ovs_testing
+#pushd /home/ralongi/github/tools/ovs_testing
 
 #./exec_ovs_upgrade.sh
 #./exec_sanity_check.sh
