@@ -157,13 +157,13 @@ get_latest_driverctl()
 get_latest_driverctl
 
 if [[ -z $RPM_DRIVERCTL ]]; then
-	export RPM_DRIVERCTL=$DRIVERCTL_RHEL10
+	export RPM_DRIVERCTL=$DRIVERCTL_RHEL9
 fi
 if [[ -z $RPM_OVS_TCPDUMP_PYTHON ]]; then
-	export RPM_OVS_TCPDUMP_PYTHON=$OVS350_PYTHON_25D_RHEL10
+	export RPM_OVS_TCPDUMP_PYTHON=$OVS310_PYTHON_25D_RHEL9
 fi
 if [[ -z $RPM_OVS_TCPDUMP_TEST ]]; then
-	export RPM_OVS_TCPDUMP_TEST=$OVS350_TCPDUMP_25D_RHEL10
+	export RPM_OVS_TCPDUMP_TEST=$OVS310_TCPDUMP_25D_RHEL9
 fi
 
 # RHEL composes
@@ -274,20 +274,20 @@ export SRC_NETPERF="http://netqe-infra01.knqe.eng.rdu2.dc.redhat.com/share/tools
 
 # VM image names
 if [[ -z $VM_IMAGE ]]; then
-	export VM_IMAGE="rhel10.1.qcow2"
+	export VM_IMAGE="rhel9.7.qcow2"
 else
 	export VM_IMAGE=$VM_IMAGE
 fi
 
 if [[ -z $VM_IMAGE_AARCH64 ]]; then
-	export VM_IMAGE_AARCH64="rhel10.1.aarch64.qcow2"
+	export VM_IMAGE_AARCH64="rhel9.7.aarch64.qcow2"
 else
 	export VM_IMAGE_AARCH64=$VM_IMAGE_AARCH64
 fi
 
 # OVS packages
 if [[ -z $RPM_OVS ]]; then
-	export RPM_OVS=$OVS350_25D_RHEL10
+	export RPM_OVS=$OVS310_25D_RHEL9
 else
 	export RPM_OVS=$RPM_OVS
 fi
@@ -309,7 +309,7 @@ fi
 
 # SELinux packages
 if [[ -z $RPM_OVS_SELINUX_EXTRA_POLICY ]]; then
-	export RPM_OVS_SELINUX_EXTRA_POLICY=$OVS_SELINUX_25D_RHEL10
+	export RPM_OVS_SELINUX_EXTRA_POLICY=$OVS_SELINUX_25D_RHEL9
 else
 	export RPM_OVS_SELINUX_EXTRA_POLICY=$RPM_OVS_SELINUX_EXTRA_POLICY
 fi
@@ -328,7 +328,7 @@ fi
 #export QEMU_KVM_RHEV_RHEL7=http://download.devel.redhat.com/brewroot/packages/qemu-kvm-rhev/2.12.0/48.el7_9.2/x86_64/qemu-kvm-rhev-2.12.0-48.el7_9.2.x86_64.rpm
 
 # OVN packages
-export RPM_OVN=$OVN350_25D_RHEL10 
+export RPM_OVN=$OVN310_25D_RHEL9 
 
 export BONDING_TESTS="ovs_test_bond_active_backup ovs_test_bond_set_active_slave ovs_test_bond_lacp_active ovs_test_bond_lacp_passive ovs_test_bond_balance_slb ovs_test_bond_balance_tcp"
 
@@ -347,7 +347,7 @@ sedeasy "25D" "$FDP_RELEASE" ~/github/tools/ovs_testing/exec_endurance.sh
 pushd /home/ralongi/github/tools/ovs_testing
 
 #./exec_ovs_upgrade.sh
-#./exec_sanity_check.sh
+./exec_sanity_check.sh
 #./exec_vm100.sh
 #./exec_ovs_qos.sh
 #./exec_mcast_snoop.sh
@@ -420,7 +420,7 @@ pushd /home/ralongi/github/tools/ovs_testing
 #./exec_topo.sh nfp ovs_env=kernel
 ##./exec_topo.sh nfp ovs_env=ovs-dpdk
 
-./exec_ovs_memory_leak_soak.sh
+#./exec_ovs_memory_leak_soak.sh
 #./exec_ovn_memory_leak_soak.sh
 
 #./exec_regression_bug.sh
