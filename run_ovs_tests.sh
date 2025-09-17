@@ -2,11 +2,14 @@
 
 # script to kick off OVS tests 
 
-# set location of your git repo:
-git_home=${git_home:-~/git/my_fork}
+# set location of your git kernel tests repo:
+export KERNEL_TESTS_HOME=${KERNEL_TESTS_HOME:-~/git/my_fork}
 
 # set location of github repo
-github_home=${github_home:-~/github}
+export GITHUB_HOME=${GITHUB_HOME:-~/github}
+
+# set location of script directory
+export script_directory=${script_directory:-$GITHUB_HOME/run_ovs_tests}
 
 # requires user input for FDP relase, RHEL version and FDP stream
 # example syntax: run_ovs_tests.sh 21e 8.4 2.13
@@ -27,10 +30,26 @@ if [[ $# -lt 3 ]] || [[ $1 = "-h" ]] || [[ $1 = "--help" ]]	|| [[ $1 = "-?" ]]; 
 	display_usage
 fi
 
+if [[ -z $tests ]]; then
+	echo "Please specify at least one or more tests to be run via: export tests=<name_of_test>"
+	echo 'Example: export tests="topo_e810_ice topo_mlx5_core_cx5 topo_mlx5_core_cx6_dx topo_mlx5_core_cx7"'
+	echo "List of frequently run tests: mcast_snoop ovs_qos forward_bpdu of_rules vm100 sanity_check power_cycle_crash ovs_upgrade topo_i40e topo_e810_ice topo_mlx5_core_cx5 topo_mlx5_core_cx6_dx topo_mlx5_core_cx6_lx topo_mlx5_core_cx7 topo_ice_sts" 
+	exit 0
+else
+	echo "Tests to be executed: $tests"
+	read -p "Would you like to proceed ? (y/n)" yn
+	case $yn in
+		[Yy]* ) 
+				;;
+		[Nn]* ) exit;;
+		* ) echo "Please answer yes or no.";;
+	esac
+fi
+
 # Make sure local git is up to date
-pushd "$git_home"/kernel/networking
+pushd "$KERNEL_TESTS_HOME"/kernel/networking &>/dev/null
 git status | grep 'working tree clean' || git pull > /dev/null
-popd 2>/dev/null
+popd &>/dev/null
 
 export FDP_RELEASE=${FDP_RELEASE:-"$1"}
 export FDP_RELEASE=$(echo $FDP_RELEASE | tr '[:lower:]' '[:upper:]')
@@ -58,7 +77,7 @@ get_starting_packages()
 
 get_starting_packages
 
-pushd "$github_home"/run_ovs_tests
+pushd "$GITHUB_HOME"/run_ovs_tests &>/dev/null
 /bin/cp -f exec_my_ovs_tests_template.sh exec_my_ovs_tests.sh
 sed -i "s/FDP_RELEASE_VALUE/$FDP_RELEASE/g" exec_my_ovs_tests.sh
 sed -i "s/RHEL_VER_VALUE/$RHEL_VER/g" exec_my_ovs_tests.sh
@@ -66,10 +85,9 @@ sed -i "s/FDP_STREAM_VALUE/$FDP_STREAM2/g" exec_my_ovs_tests.sh
 sed -i "s/YEAR_VALUE/$YEAR/g" exec_my_ovs_tests.sh
 sed -i "s/RHEL_VER_MAJOR_VALUE/$RHEL_VER_MAJOR/g" exec_my_ovs_tests.sh
 
-# new code
-if [[ -z $tests ]]; then
-	tests=$(grep "^OVS-$FDP_STREAM-RHEL-$RHEL_VER_MAJOR-Tests" ~/github/tools/scripts/fdp_errata_list.txt | awk -F ":" '{print $NF}')
-fi
+#if [[ -z $tests ]]; then
+#	tests=$(grep "^OVS-$FDP_STREAM-RHEL-$RHEL_VER_MAJOR-Tests" ~/github/tools/scripts/fdp_errata_list.txt | awk -F ":" '{print $NF}')
+#fi
 
 for i in $tests; do
 	if [[ $i == *"mcast_snoop"* ]]; then
@@ -96,7 +114,7 @@ for i in $tests; do
 		else
 			sed -i '/test_exec_topo.sh i40e/s/^#//g' exec_my_ovs_tests.sh
 		fi
-	elif [[ $i == *"topo_e810"* ]] && [[ ! $(echo $i | grep bp) ]]; then
+	elif [[ $i == *"topo_e810_ice"* ]] && [[ ! $(echo $i | grep bp) ]]; then
 		if [[ $ovs_env ]]; then
 			sed -i "/test_exec_topo.sh e810_ice ovs_env=$ovs_env/s/^#//g" exec_my_ovs_tests.sh
 		else
@@ -249,7 +267,7 @@ done
 
 ./exec_my_ovs_tests.sh
 
-popd 2>/dev/null
+popd &>/dev/null
 
 echo "FDP_RELEASE: $FDP_RELEASE"
 echo "RHEL_VER_MAJOR: $RHEL_VER_MAJOR"

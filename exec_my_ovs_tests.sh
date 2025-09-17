@@ -7,7 +7,7 @@ RHEL_VER_MAJOR=$(echo $RHEL_VER | awk -F "." '{print $1}')
 SELINUX=${SELINUX:-"yes"}
 COMPOSE=${COMPOSE:-""}
 GUEST_IMG_VALUE=$RHEL_VER
-~/gvar/bin/gvar $COMPOSE
+#~/gvar/bin/gvar $COMPOSE
 repo=${repo:-""}
 if [[ $repo ]]; then
 	repo_cmd="--repo=$repo"
@@ -40,11 +40,11 @@ get_beaker_compose_id()
     source .bash_profile
     gvar -v > /dev/null
     if [[ $? -ne 0 ]]; then
-	    pushd ~
+	    pushd ~ &>/dev/null
 	    git clone git@github.com:arturoherrero/gvar.git
 	    echo 'export PATH="${PATH}:~/gvar/bin"' >> ~/.bash_profile
 	    source ~/.bash_profile
-	    popd 2>/dev/null
+	    popd &>/dev/null
     fi
 	    
     display_usage()
@@ -101,7 +101,7 @@ get_latest_driverctl()
 	latest_el8_package_id=$(curl -sL http://$download_server/brewroot/packages/driverctl/$latest_build_id/ | grep el8 | head -n1 |  awk -F '"' '{print $8}' | tr -d '/')
 	el8_rpm=$(curl -sL http://$download_server/brewroot/packages/driverctl/$latest_build_id/$latest_el8_package_id/noarch/ | grep rpm | awk -F '"' '{print $8}')
 	
-	echo "RHEL-8 URL: http://$download_server/brewroot/packages/driverctl/$latest_build_id/$latest_el8_package_id/noarch/$el8_rpm"	
+	#echo "RHEL-8 DRIVERCTL URL: http://$download_server/brewroot/packages/driverctl/$latest_build_id/$latest_el8_package_id/noarch/$el8_rpm"	
 	export DRIVERCTL_RHEL8="http://$download_server/brewroot/packages/driverctl/$latest_build_id/$latest_el8_package_id/noarch/$el8_rpm"
 	
 	if [[ ! $(curl -sL http://$download_server/brewroot/packages/driverctl/$latest_build_id/ | grep el9) ]]; then
@@ -112,14 +112,14 @@ get_latest_driverctl()
 
 	el9_rpm=$(curl -sL http://$download_server/brewroot/packages/driverctl/$latest_build_id/$latest_el9_package_id/noarch/ | grep rpm | awk -F '"' '{print $8}')	
 	
-	echo "RHEL-9 URL: http://$download_server/brewroot/packages/driverctl/$latest_build_id/$latest_el9_package_id/noarch/$el9_rpm"	
+	#echo "RHEL-9 DRIVERCTL URL: http://$download_server/brewroot/packages/driverctl/$latest_build_id/$latest_el9_package_id/noarch/$el9_rpm"	
 	export DRIVERCTL_RHEL9="http://$download_server/brewroot/packages/driverctl/$latest_build_id/$latest_el9_package_id/noarch/$el9_rpm"
 	
 	latest_el10_package_id=$(curl -sL http://$download_server/brewroot/packages/driverctl/$latest_build_id/ | grep el10 | head -n1 |  awk -F '"' '{print $8}' | tr -d '/')
 
 	el10_rpm=$(curl -sL http://$download_server/brewroot/packages/driverctl/$latest_build_id/$latest_el10_package_id/noarch/ | grep rpm | awk -F '"' '{print $8}')	
 	
-	echo "RHEL-10 URL: http://$download_server/brewroot/packages/driverctl/$latest_build_id/$latest_el10_package_id/noarch/$el10_rpm"	
+	#echo "RHEL-10 DRIVERCTL URL: http://$download_server/brewroot/packages/driverctl/$latest_build_id/$latest_el10_package_id/noarch/$el10_rpm"	
 	export DRIVERCTL_RHEL10="http://$download_server/brewroot/packages/driverctl/$latest_build_id/$latest_el10_package_id/noarch/$el10_rpm"
 }
 
@@ -170,7 +170,7 @@ get_zstream_repos()
 	arch=${arch:-"x86_64"}
 	z_stream_base=$(echo $COMPOSE | awk -F '-' '{print $2}' | tr -d . | cut -c-2)
 	z_stream_base=$(echo $z_stream_base)z
-	pushd ~
+	pushd ~ &>/dev/null
 	alias rm='rm' 
 	rm -f zstream_repos.txt
 	wget -O ZConfig.yaml https://gitlab.cee.redhat.com/kernel-qe/core-kernel/kernel-general/-/raw/master/Sustaining/ZConfig.yaml
@@ -182,7 +182,7 @@ get_zstream_repos()
 	export zstream_repo_list=$(cat zstream_repos.txt)
 	rm -f ZConfig.yaml
 	alias rm='rm -i'
-	popd 2>/dev/null
+	popd &>/dev/null
 }
 
 get_dpdk_packages()
@@ -399,4 +399,4 @@ echo "RPM_OVN_COMMON: $RPM_OVN_COMMON"
 echo "RPM_OVN_CENTRAL: $RPM_OVN_CENTRAL"
 echo "RPM_OVN_HOST: $RPM_OVN_HOST"
 
-popd 2>/dev/null
+popd &>/dev/null
