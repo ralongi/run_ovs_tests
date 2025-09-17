@@ -122,7 +122,9 @@ else
 	share_dir=$(mount | grep 'netqe-infra01.knqe.eng.rdu2.dc.redhat.com:/home/www/html/share' | awk '{print $3}')
 fi
 
-/bin/cp -f $package_file "$share_dir"
+/bin/cp -f $package_file "$share_dir"/misc
+
+rm -f $new_package_template_file $new_package_list_temp_file $new_package_list_file $fdp_errata_list_file $package_list_file
 
 popd &>/dev/null
 popd &>/dev/null
