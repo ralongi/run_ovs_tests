@@ -1,13 +1,13 @@
 #!/bin/bash
 
-dbg_flag=${dbg_flag:-"set -x"}
+dbg_flag=${dbg_flag:-"set +x"}
 $dbg_flag
 #RHEL_VER=${RHEL_VER:-""}
 RHEL_VER_MAJOR=$(echo $RHEL_VER | awk -F "." '{print $1}')
 SELINUX=${SELINUX:-"yes"}
 COMPOSE=${COMPOSE:-""}
 GUEST_IMG_VALUE=$RHEL_VER
-/home/ralongi/gvar/bin/gvar $COMPOSE
+~/gvar/bin/gvar $COMPOSE
 repo=${repo:-""}
 if [[ $repo ]]; then
 	repo_cmd="--repo=$repo"
@@ -15,12 +15,6 @@ fi
 brew_target_flag=${brew_target_flag:-"off"}
 
 if [[ $brew_build ]]; then export brew_build_cmd="-B $brew_build"; fi
-
-# Attempt to set uefi systems to PXE boot
-# List of target uefi systems in file ~/uefi_pssh_hosts.txt, run ~/set_uefi_bootnext_pxi.sh on target systems
-#echo "Attempting to set PXE boot on uefi systems before running tests..."
-#num_pssh_hosts=$(cat ~/uefi_pssh_hosts.txt | wc -l)
-#timeout 10s bash -c "until pssh -O StrictHostKeyChecking=no -p $num_pssh_hosts -h ~/uefi_pssh_hosts.txt -t 0 -l root 'bash -s' < ~/set_uefi_bootnext_pxi.sh; do sleep 0; done"
 
 # Script to execute all of my ovs tests
 
@@ -83,41 +77,12 @@ get_beaker_compose_id()
     gvar latest_compose_id=$latest_compose_id
 }
 
-netscout_cable()
-{
-	rhel_version=$(cut -f1 -d. /etc/redhat-release | sed 's/[^0-9]//g')
-	local port1=$(echo $1 | tr '[:lower:]' '[:upper:]')
-	local port2=$(echo $2 | tr '[:lower:]' '[:upper:]')
-	# possible netscout switches: bos_3200  bos_3903  nay_3200  nay_3901
-	# set this in runtest.sh as necessary --append-task="/kernel/networking/openvswitch/crash_check {dbg_flag=set -x}"
-	netscout_switch=${netscout_switch:-"bos_3903"}
-	
-	if [[ "$rhel_version" -eq 8 ]]; then
-		pushd /home/NetScout/
-		rm -f settings.cfg
-		wget -O ./settings.cfg http://netqe-infra01.knqe.eng.rdu2.dc.redhat.com/NSConn/"$netscout_switch".cfg
-		sleep 2
-		python3 /home/ralongi/github/NetScout/NSConnect.py --connect $port1 $port2
-		popd 2>/dev/null
-	elif [[ "$rhel_version" -eq 7 ]]; then	
-		scl enable rh-python34 - << EOF
-			pushd /home/NetScout/
-			rm -f settings.cfg
-			wget -O ./settings.cfg http://netqe-infra01.knqe.eng.rdu2.dc.redhat.com/NSConn/"$netscout_switch".cfg
-			sleep 2
-			python /home/ralongi/github/NetScout/NSConnect.py --connect $port1 $port2
-			popd 2>/dev/null
-EOF
-	fi
-}
-
 # Get the latest driverctl package URLs
 
 get_latest_driverctl()
 {
-    $dbg_flag
     download_server="download.devel.redhat.com"
-    timeout 5s bash -c "curl -sL http://$download_server/brewroot/packages/driverctl"
+    timeout 5s bash -c "curl -sL -o /dev/null http://$download_server/brewroot/packages/driverctl"
     if [[ $? -ne 0 ]]; then
     	download_server="download.eng.bos.redhat.com"
     	timeout 5s bash -c "curl -sL http://$download_server/brewroot/packages/driverctl"
@@ -136,7 +101,7 @@ get_latest_driverctl()
 	latest_el8_package_id=$(curl -sL http://$download_server/brewroot/packages/driverctl/$latest_build_id/ | grep el8 | head -n1 |  awk -F '"' '{print $8}' | tr -d '/')
 	el8_rpm=$(curl -sL http://$download_server/brewroot/packages/driverctl/$latest_build_id/$latest_el8_package_id/noarch/ | grep rpm | awk -F '"' '{print $8}')
 	
-	echo "RHEL-8 URL: http://$download_server/brewroot/packages/driverctl/$latest_build_id/$latest_el8_package_id/noarch/$el8_rpm"	
+	echo "RHEL-8 DRIVERCTL URL: http://$download_server/brewroot/packages/driverctl/$latest_build_id/$latest_el8_package_id/noarch/$el8_rpm"	
 	export DRIVERCTL_RHEL8="http://$download_server/brewroot/packages/driverctl/$latest_build_id/$latest_el8_package_id/noarch/$el8_rpm"
 	
 	if [[ ! $(curl -sL http://$download_server/brewroot/packages/driverctl/$latest_build_id/ | grep el9) ]]; then
@@ -147,8 +112,15 @@ get_latest_driverctl()
 
 	el9_rpm=$(curl -sL http://$download_server/brewroot/packages/driverctl/$latest_build_id/$latest_el9_package_id/noarch/ | grep rpm | awk -F '"' '{print $8}')	
 	
-	echo "RHEL-9 URL: http://$download_server/brewroot/packages/driverctl/$latest_build_id/$latest_el9_package_id/noarch/$el9_rpm"	
+	echo "RHEL-9 DRIVERCTL URL: http://$download_server/brewroot/packages/driverctl/$latest_build_id/$latest_el9_package_id/noarch/$el9_rpm"	
 	export DRIVERCTL_RHEL9="http://$download_server/brewroot/packages/driverctl/$latest_build_id/$latest_el9_package_id/noarch/$el9_rpm"
+	
+	latest_el10_package_id=$(curl -sL http://$download_server/brewroot/packages/driverctl/$latest_build_id/ | grep el10 | head -n1 |  awk -F '"' '{print $8}' | tr -d '/')
+
+	el10_rpm=$(curl -sL http://$download_server/brewroot/packages/driverctl/$latest_build_id/$latest_el10_package_id/noarch/ | grep rpm | awk -F '"' '{print $8}')	
+	
+	echo "RHEL-10 DRIVERCTL URL: http://$download_server/brewroot/packages/driverctl/$latest_build_id/$latest_el10_package_id/noarch/$el10_rpm"	
+	export DRIVERCTL_RHEL10="http://$download_server/brewroot/packages/driverctl/$latest_build_id/$latest_el10_package_id/noarch/$el10_rpm"
 }
 
 get_latest_driverctl
@@ -176,7 +148,6 @@ if [[ -z $COMPOSE ]]; then
 	    echo "Using Z stream compose $zstream_compose..."
 	else
 	    echo "No valid $RHEL_VER Z stream compose was found.  Will now use the latest available $RHEL_VER compose."
-	    #/home/ralongi/github/tools/scripts/get_beaker_compose_id.sh $RHEL_VER
 	    get_beaker_compose_id $RHEL_VER
 	    export COMPOSE=$(/home/ralongi/gvar/bin/gvar $latest_compose_id | awk -F "=" '{print $NF}')
 	    export brew_target_flag="on"
@@ -199,7 +170,7 @@ get_zstream_repos()
 	arch=${arch:-"x86_64"}
 	z_stream_base=$(echo $COMPOSE | awk -F '-' '{print $2}' | tr -d . | cut -c-2)
 	z_stream_base=$(echo $z_stream_base)z
-	pushd ~/temp
+	pushd ~
 	alias rm='rm' 
 	rm -f zstream_repos.txt
 	wget -O ZConfig.yaml https://gitlab.cee.redhat.com/kernel-qe/core-kernel/kernel-general/-/raw/master/Sustaining/ZConfig.yaml
@@ -247,24 +218,8 @@ if [[ -z $RPM_DPDK ]] || [[ -z $RPM_DPDK_TOOLS ]]; then
 	if [[ $(echo $version_id  | awk -F '.' '{print $1}') -eq 7 ]]; then
 		export RPM_DPDK_RHEL7=http://$download_server/brewroot/packages/dpdk/18.11.8/1.el7_8/x86_64/dpdk-18.11.8-1.el7_8.x86_64.rpm
 		export RPM_DPDK_TOOLS_RHEL7=http://$download_server/brewroot/packages/dpdk/18.11.8/1.el7_8/x86_64/dpdk-tools-18.11.8-1.el7_8.x86_64.rpm
-	#else
-	#	version_id=$(echo $COMPOSE | awk -F "-" '{print $2}' | sed s/.0//g)
-	#	get_dpdk_packages $version_id
 	fi
 fi
-
-# Comment out below since DPDK packages are now included with openvswitch
-#if [[ -z $RPM_DPDK ]] || [[ -z $RPM_DPDK_TOOLS ]]; then
-#	if [[ $(echo $COMPOSE | grep RHEL-8) ]]; then
-#		export RPM_DPDK=https://download.eng.bos.redhat.com/brewroot/vol/rhel-8/packages/dpdk/21.11/2.el8_6/x86_64/dpdk-21.11-2.el8_6.x86_64.rpm
-#		export RPM_DPDK_TOOLS=https://download.eng.bos.redhat.com/brewroot/vol/rhel-8/packages/dpdk/21.11/2.el8_6/x86_64/dpdk-tools-21.11-2.el8_6.x86_64.rpm
-#	elif [[ $(echo $COMPOSE | grep RHEL-9) ]]; then
-#		export RPM_DPDK=https://download.eng.bos.redhat.com/brewroot/vol/rhel-9/packages/dpdk/21.11/2.el9_0/x86_64/dpdk-21.11-2.el9_0.x86_64.rpm
-#		export RPM_DPDK_TOOLS=https://download.eng.bos.redhat.com/brewroot/vol/rhel-9/packages/dpdk/21.11/2.el9_0/x86_64/dpdk-tools-21.11-2.el9_0.x86_64.rpm
-#	fi
-#fi
-
-#get_zstream_repos
 
 # Netperf package
 export SRC_NETPERF="http://netqe-infra01.knqe.eng.rdu2.dc.redhat.com/share/tools/netperf-20210121.tar.bz2"
@@ -311,19 +266,6 @@ else
 	export RPM_OVS_SELINUX_EXTRA_POLICY=$RPM_OVS_SELINUX_EXTRA_POLICY
 fi
 
-# For rpm_dpdk variable used by openvswitch/perf tests
-#export rpm_dpdk=$RPM_DPDK
-#export rpm_dpdk_tools=$RPM_DPDK_TOOLS
-
-#http_code=$(curl --silent --head --write-out '%{http_code}' "$RPM_DPDK" | grep HTTP | awk '{print $2}')
-#if [[ "$http_code" -ne 200 ]]; then echo "$RPM_DPDK is NOT a valid link. Exiting..."; exit 1; fi
-
-#http_code=$(curl --silent --head --write-out '%{http_code}' "$RPM_DPDK_TOOLS" | grep HTTP | awk '{print $2}')
-#if [[ "$http_code" -ne 200 ]]; then echo "$RPM_DPDK_TOOLS is NOT a valid link. Exiting..."; exit 1; fi
-
-# QEMU packages
-#export QEMU_KVM_RHEV_RHEL7=http://download.devel.redhat.com/brewroot/packages/qemu-kvm-rhev/2.12.0/48.el7_9.2/x86_64/qemu-kvm-rhev-2.12.0-48.el7_9.2.x86_64.rpm
-
 # OVN packages
 export RPM_OVN=$OVNFDP_STREAM_VALUE_FDP_RELEASE_VALUE_RHELRHEL_VER_MAJOR_VALUE 
 
@@ -335,123 +277,116 @@ export BONDING_CPU_TESTS="ovs_test_bond_active_backup ovs_test_bond_set_active_s
 
 export GRE_IPV6_TESTS="ovs_test_gre_ipv6 ovs_test_gre1_ipv6 ovs_test_gre_flow_ipv6 ovs_test_vlan_gre_ipv6 ovs_test_vlan_gre1_ipv6 ovs_test_vm_gre_ipv6 ovs_test_vm_gre1_ipv6 ovs_test_vm_gre_flow_ipv6 ovs_test_vm_vlan_gre_ipv6 ovs_test_vm_vlan_gre1_ipv6"
 
-# Insert $FDP release into exec_perf_ci.sh and exec_endurance.sh
-#sedeasy "FDP_RELEASE_VALUE" "$FDP_RELEASE" ~/github/tools/ovs_testing/exec_perf_ci.sh
-#sedeasy "FDP_RELEASE_VALUE" "$FDP_RELEASE" ~/github/tools/ovs_testing/exec_endurance.sh
-
-#pushd /home/ralongi/Documents/ovs_testing
-#pushd /home/ralongi/global_docs/ovs_testing
-#pushd /home/ralongi/github/tools/ovs_testing
-
-#./exec_ovs_upgrade.sh
-#./exec_sanity_check.sh
-#./exec_vm100.sh
-#./exec_ovs_qos.sh
-#./exec_mcast_snoop.sh
-#./exec_power_cycle_crash.sh
-#./exec_forward_bpdu.sh
-#./exec_of_rules.sh
+#./test_exec_ovs_upgrade.sh
+#./test_exec_sanity_check.sh
+#./test_exec_vm100.sh
+#./test_exec_ovs_qos.sh
+#./test_exec_mcast_snoop.sh
+#./test_exec_power_cycle_crash.sh
+#./test_exec_forward_bpdu.sh
+#./test_exec_of_rules.sh
 
 # To run just the ovs_test_ns_enable_nomlockall_CPUAffinity_test for topo, add "cpu" to the string of arguments
-#./exec_topo.sh ixgbe ovs_env=kernel
-##./exec_topo.sh ixgbe ovs_env=ovs-dpdk
-#./exec_topo.sh i40e ovs_env=kernel
-##./exec_topo.sh i40e ovs_env=ovs-dpdk
-#./exec_topo.sh e810_ice ovs_env=kernel
-##./exec_topo.sh e810_ice ovs_env=ovs-dpdk
-#./exec_topo.sh e830_ice ovs_env=kernel
-##./exec_topo.sh e830_ice ovs_env=ovs-dpdk
-#./exec_topo.sh e825_ice ovs_env=kernel
-##./exec_topo.sh e825_ice ovs_env=ovs-dpdk
-#./exec_topo.sh e810_ice_bp ovs_env=kernel
-##./exec_topo.sh e810_ice_bp ovs_env=ovs-dpdk
-#./exec_topo.sh e823_ice_bp ovs_env=kernel
-##./exec_topo.sh e823_ice_bp ovs_env=ovs-dpdk
-#./exec_topo.sh e823_ice_sfp ovs_env=kernel
-##./exec_topo.sh e823_ice_sfp ovs_env=ovs-dpdk
-#./exec_topo.sh mlx5_core cx5 ovs_env=kernel
-##./exec_topo.sh mlx5_core cx5 ovs_env=ovs-dpdk
-#./exec_topo.sh mlx5_core cx6 dx ovs_env=kernel
-##./exec_topo.sh mlx5_core cx6 dx ovs_env=ovs-dpdk
-#./exec_topo.sh mlx5_core cx6 lx ovs_env=kernel
-##./exec_topo.sh mlx5_core cx6 lx ovs_env=ovs-dpdk
-#./exec_topo.sh arm ovs_env=kernel
+#./test_exec_topo.sh ixgbe ovs_env=kernel
+##./test_exec_topo.sh ixgbe ovs_env=ovs-dpdk
+#./test_exec_topo.sh i40e ovs_env=kernel
+##./test_exec_topo.sh i40e ovs_env=ovs-dpdk
+#./test_exec_topo.sh e810_ice ovs_env=kernel
+##./test_exec_topo.sh e810_ice ovs_env=ovs-dpdk
+#./test_exec_topo.sh e830_ice ovs_env=kernel
+##./test_exec_topo.sh e830_ice ovs_env=ovs-dpdk
+#./test_exec_topo.sh e825_ice ovs_env=kernel
+##./test_exec_topo.sh e825_ice ovs_env=ovs-dpdk
+#./test_exec_topo.sh e810_ice_bp ovs_env=kernel
+##./test_exec_topo.sh e810_ice_bp ovs_env=ovs-dpdk
+#./test_exec_topo.sh e823_ice_bp ovs_env=kernel
+##./test_exec_topo.sh e823_ice_bp ovs_env=ovs-dpdk
+#./test_exec_topo.sh e823_ice_sfp ovs_env=kernel
+##./test_exec_topo.sh e823_ice_sfp ovs_env=ovs-dpdk
+#./test_exec_topo.sh mlx5_core cx5 ovs_env=kernel
+##./test_exec_topo.sh mlx5_core cx5 ovs_env=ovs-dpdk
+#./test_exec_topo.sh mlx5_core cx6 dx ovs_env=kernel
+##./test_exec_topo.sh mlx5_core cx6 dx ovs_env=ovs-dpdk
+#./test_exec_topo.sh mlx5_core cx6 lx ovs_env=kernel
+##./test_exec_topo.sh mlx5_core cx6 lx ovs_env=ovs-dpdk
+#./test_exec_topo.sh arm ovs_env=kernel
 
-#./exec_topo.sh mlx5_core_arm cx7 ovs_env=kernel
+#./test_exec_topo.sh mlx5_core_arm cx7 ovs_env=kernel
 
-##./exec_topo.sh arm ovs_env=ovs-dpdk
-#./exec_topo.sh mlx5_core cx7 ovs_env=kernel
-##./exec_topo.sh mlx5_core cx7 ovs_env=ovs-dpdk
-#./exec_topo.sh mlx5_core bf2 ovs_env=kernel
-##./exec_topo.sh mlx5_core bf2 ovs_env=ovs-dpdk
-#./exec_topo.sh sts ovs_env=kernel
-##./exec_topo.sh sts ovs_env=ovs-dpdk
-#./exec_topo.sh t4l ovs_env=kernel
-##./exec_topo.sh t4l ovs_env=ovs-dpdk
-#./exec_topo.sh empire ovs_env=kernel
-##./exec_topo.sh empire ovs_env=ovs-dpdk
-#./exec_topo.sh bmc57504 ovs_env=kernel
-##./exec_topo.sh bmc57504 ovs_env=ovs-dpdk
-#./exec_topo.sh 6820c ovs_env=kernel
-##./exec_topo.sh 6820c ovs_env=ovs-dpdk
-#./exec_topo.sh mlx5_core bf3 ovs_env=kernel
-##./exec_topo.sh mlx5_core bf3 ovs_env=ovs-dpdk
+##./test_exec_topo.sh arm ovs_env=ovs-dpdk
+#./test_exec_topo.sh mlx5_core cx7 ovs_env=kernel
+##./test_exec_topo.sh mlx5_core cx7 ovs_env=ovs-dpdk
+#./test_exec_topo.sh mlx5_core bf2 ovs_env=kernel
+##./test_exec_topo.sh mlx5_core bf2 ovs_env=ovs-dpdk
+#./test_exec_topo.sh sts ovs_env=kernel
+##./test_exec_topo.sh sts ovs_env=ovs-dpdk
+#./test_exec_topo.sh t4l ovs_env=kernel
+##./test_exec_topo.sh t4l ovs_env=ovs-dpdk
+#./test_exec_topo.sh empire ovs_env=kernel
+##./test_exec_topo.sh empire ovs_env=ovs-dpdk
+#./test_exec_topo.sh bmc57504 ovs_env=kernel
+##./test_exec_topo.sh bmc57504 ovs_env=ovs-dpdk
+#./test_exec_topo.sh 6820c ovs_env=kernel
+##./test_exec_topo.sh 6820c ovs_env=ovs-dpdk
+#./test_exec_topo.sh mlx5_core bf3 ovs_env=kernel
+##./test_exec_topo.sh mlx5_core bf3 ovs_env=ovs-dpdk
 
-#./exec_endurance.sh cx5
-#./exec_perf_ci.sh cx5
-#./exec_endurance.sh cx6dx
-#./exec_perf_ci.sh cx6dx
-#./exec_endurance.sh cx6lx
-#./exec_perf_ci.sh cx6lx
-#./exec_endurance.sh bf2
-#./exec_perf_ci.sh bf2
-#./exec_endurance.sh bf3
-#./exec_perf_ci.sh bf3
+#./test_exec_endurance.sh cx5
+#./test_exec_perf_ci.sh cx5
+#./test_exec_endurance.sh cx6dx
+#./test_exec_perf_ci.sh cx6dx
+#./test_exec_endurance.sh cx6lx
+#./test_exec_perf_ci.sh cx6lx
+#./test_exec_endurance.sh bf2
+#./test_exec_perf_ci.sh bf2
+#./test_exec_endurance.sh bf3
+#./test_exec_perf_ci.sh bf3
 
-#./exec_topo.sh enic ovs_env=kernel
-##./exec_topo.sh enic ovs_env=ovs-dpdk
-#./exec_topo.sh qede ovs_env=kernel
-##./exec_topo.sh qede ovs_env=ovs-dpdk
-#./exec_topo.sh bnxt_en ovs_env=kernel
-##./exec_topo.sh bnxt_en ovs_env=ovs-dpdk
-#./exec_topo.sh nfp ovs_env=kernel
-##./exec_topo.sh nfp ovs_env=ovs-dpdk
+#./test_exec_topo.sh enic ovs_env=kernel
+##./test_exec_topo.sh enic ovs_env=ovs-dpdk
+#./test_exec_topo.sh qede ovs_env=kernel
+##./test_exec_topo.sh qede ovs_env=ovs-dpdk
+#./test_exec_topo.sh bnxt_en ovs_env=kernel
+##./test_exec_topo.sh bnxt_en ovs_env=ovs-dpdk
+#./test_exec_topo.sh nfp ovs_env=kernel
+##./test_exec_topo.sh nfp ovs_env=ovs-dpdk
 
-#./exec_ovs_memory_leak_soak.sh
-#./exec_ovn_memory_leak_soak.sh
+#./test_exec_ovs_memory_leak_soak.sh
+#./test_exec_ovn_memory_leak_soak.sh
 
-#./exec_regression_bug.sh
+#./test_exec_regression_bug.sh
 
 # Conntrack firewall rules Jiying Qiu (not related to driver)
 # openvswitch/conntrack2 and openvswitch/conntrack_dpdk
-#./exec_conntrack2.sh
-#./exec_conntrack_dpdk.sh
+#./test_exec_conntrack2.sh
+#./test_exec_conntrack_dpdk.sh
 
 # Stateful traffic Xena (by speed)
 # openvswitch/conntrack3/ct_kernel and openvswitch/conntrack3/ct_userspace
 # Google sheet: https://docs.google.com/spreadsheets/d/1cPG1ovmrCo1RhAMGVfK9SgKIEtj7yocjYP_CDvLUfYY/edit?usp=sharing
-#./exec_ct_kernel.sh
-#./exec_ct_userspace.sh
+#./test_exec_ct_kernel.sh
+#./test_exec_ct_userspace.sh
 
 # ovs-dpdk-conntrack
 # Google sheet: https://docs.google.com/spreadsheets/d/17MKqKpCmVV93dhCawgD-xxAm3aQweV5yszb82A-L-Kk/edit?usp=sharing
 # search for "disable emc" and then "enable emc" in taskout.log file
-#./exec_ovs_dpdk_conntrack.sh
+#./test_exec_ovs_dpdk_conntrack.sh
 
 # ovs-kernel-conntrack
 # Google sheet: https://docs.google.com/spreadsheets/d/1qku7ViuVgAwWXobQjekv1JxNvfQ4rgjCOBX0NTeda9o/edit?usp=sharing
 # search for "disable emc" and then "enable emc" in taskout.log file
-#./exec_ovs_kernel_conntrack.sh
+#./test_exec_ovs_kernel_conntrack.sh
 
 # ovs-dpdk-latency
 # Google sheet: https://docs.google.com/spreadsheets/d/11BqpCkXoUXTVH4s0uMGZ4ieBOZzUNjbYS9E-3CxYIpI/edit?usp=sharing
 # search for "Flows:" in taskout.log file
-#./exec_ovs_dpdk_latency.sh
+#./test_exec_ovs_dpdk_latency.sh
 
 # xena_conntrack/xena_dpdk
-#./exec_xena_dpdk.sh
+#./test_exec_xena_dpdk.sh
 
-### may need to add vm_100
+# vm_100
+#./test_exec_vm100.sh
 
 #echo "FDP_STREAM2 is now set to $FDP_STREAM2"
 echo "COMPOSE is: $COMPOSE"
