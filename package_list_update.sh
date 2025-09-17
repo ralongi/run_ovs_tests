@@ -14,7 +14,7 @@ if [[ ! $(echo "$fdp_release" | grep '\.') ]]; then
 	echo "Please include the period in the FDP release designation without 'FDP' (25.C, 25.c, etc)"
 	exit 0
 fi
-package_file=~/inf_www/share/misc/fdp_package_list.sh
+package_file="$script_directory"/fdp_package_list.sh
 fdp_release_short=$(echo $fdp_release | tr -d .)
 new_package_template_file="$script_directory/new_package_list_template.sh"
 new_package_list_temp_file="$script_directory/new_package_list_temp.sh"
@@ -109,6 +109,20 @@ fi
 
 # Append entries for $fdp_release to $package_file
 cat $new_package_list_file >> $package_file
+
+# copy updated fdp_package_list.sh file to infra01
+rpm -q nfs-utils || sudo dnf -y install nfs-utils
+mount | grep 'netqe-infra01.knqe.eng.rdu2.dc.redhat.com:/home/www/html/share'
+if [[ $? -eq 0 ]]; then
+	share_dir=$(mount | grep 'netqe-infra01.knqe.eng.rdu2.dc.redhat.com:/home/www/html/share' | awk '{print $3}')
+else
+	mkdir ~/infra01_share/
+	sudo mount netqe-infra01.knqe.eng.rdu2.dc.redhat.com:/home/www/html/share ~/infra01_share/
+	wait
+	share_dir=$(mount | grep 'netqe-infra01.knqe.eng.rdu2.dc.redhat.com:/home/www/html/share' | awk '{print $3}')
+fi
+
+/bin/cp -f $package_file "$share_dir"
 
 popd &>/dev/null
 popd &>/dev/null
