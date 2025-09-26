@@ -22,7 +22,7 @@ if [[ -z $arch ]]; then
 	fi
 fi
 ovs_rpm_name=$(echo $RPM_OVS | awk -F "/" '{print $NF}')
-image_mode=${image_mode:-"yes"}
+image_mode=${image_mode:-"no"}
 NAY="${NAY:-"no"}"
 PVT="${PVT:-"no"}"
 GET_NIC_WITH_MAC="${GET_NIC_WITH_MAC:-"yes"}"

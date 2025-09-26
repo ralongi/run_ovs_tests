@@ -385,9 +385,6 @@ export GRE_IPV6_TESTS="ovs_test_gre_ipv6 ovs_test_gre1_ipv6 ovs_test_gre_flow_ip
 # xena_conntrack/xena_dpdk
 #./test_exec_xena_dpdk.sh
 
-# vm_100
-#./test_exec_vm100.sh
-
 #echo "FDP_STREAM2 is now set to $FDP_STREAM2"
 echo "COMPOSE is: $COMPOSE"
 echo "FDP Release is: $FDP_RELEASE"

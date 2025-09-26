@@ -277,9 +277,9 @@ export BONDING_CPU_TESTS="ovs_test_bond_active_backup ovs_test_bond_set_active_s
 
 export GRE_IPV6_TESTS="ovs_test_gre_ipv6 ovs_test_gre1_ipv6 ovs_test_gre_flow_ipv6 ovs_test_vlan_gre_ipv6 ovs_test_vlan_gre1_ipv6 ovs_test_vm_gre_ipv6 ovs_test_vm_gre1_ipv6 ovs_test_vm_gre_flow_ipv6 ovs_test_vm_vlan_gre_ipv6 ovs_test_vm_vlan_gre1_ipv6"
 
-./test_exec_ovs_upgrade.sh
+#./test_exec_ovs_upgrade.sh
 #./test_exec_sanity_check.sh
-#./test_exec_vm100.sh
+./test_exec_vm100.sh
 #./test_exec_ovs_qos.sh
 #./test_exec_mcast_snoop.sh
 #./test_exec_power_cycle_crash.sh
@@ -384,9 +384,6 @@ export GRE_IPV6_TESTS="ovs_test_gre_ipv6 ovs_test_gre1_ipv6 ovs_test_gre_flow_ip
 
 # xena_conntrack/xena_dpdk
 #./test_exec_xena_dpdk.sh
-
-# vm_100
-#./test_exec_vm100.sh
 
 #echo "FDP_STREAM2 is now set to $FDP_STREAM2"
 echo "COMPOSE is: $COMPOSE"
