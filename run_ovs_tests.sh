@@ -63,20 +63,6 @@ if [[ $FDP_STREAM2 -gt 213 ]]; then
 	YEAR=$(grep -i ovn fdp_package_list.sh | grep $FDP_RELEASE | awk -F "_" '{print $3}' | grep -v 213 | tail -n1)
 fi
 
-get_starting_packages()
-{
-	$dbg_flag
-    starting_stream=$(grep OVS$FDP_STREAM2 fdp_package_list.sh | grep RHEL$RHEL_VER_MAJOR | egrep -vi 'python|tcpdump' | tail -n2 | head -n1 | awk -F "_" '{print $2}')
-    
-    export STARTING_RPM_OVS=$(grep "$starting_stream" fdp_package_list.sh | grep OVS$FDP_STREAM2 | grep RHEL$RHEL_VER_MAJOR | egrep -vi 'python|tcpdump' | awk -F "=" '{print $2}')
-    export STARTING_RPM_OVS_SELINUX_EXTRA_POLICY=$(grep "$starting_stream" fdp_package_list.sh | grep -i selinux | grep RHEL$RHEL_VER_MAJOR | awk -F "=" '{print $NF}')
-
-    #echo "STARTING_RPM_OVS: $STARTING_RPM_OVS"
-    #echo "STARTING_RPM_OVS_SELINUX_EXTRA_POLICY: $STARTING_RPM_OVS_SELINUX_EXTRA_POLICY"
-}
-
-get_starting_packages
-
 pushd "$GITHUB_HOME"/run_ovs_tests &>/dev/null
 /bin/cp -f exec_my_ovs_tests_template.sh exec_my_ovs_tests.sh
 sed -i "s/FDP_RELEASE_VALUE/$FDP_RELEASE/g" exec_my_ovs_tests.sh

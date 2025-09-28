@@ -70,10 +70,6 @@ elif [[ "$arch_test" == "aarch64" ]]; then
 	ovs_rpm_name=$(echo $RPM_OVS_AARCH64 | awk -F "/" '{print $NF}')
 fi
 
-if [[ "$driver" == *"arm"* ]]; then
-	export GUEST_TYPE="container"
-fi
-
 #if [[ "$*" == *"cpu"* ]]; then
 #	export OVS_TOPO="ovs_test_ns_enable_nomlockall_CPUAffinity_test"
 #fi
@@ -253,43 +249,25 @@ elif [[ "$driver" == "mlx5_core" ]] && [[ -z "$mlx_card_type" ]]; then
 	
 ### ARM aarch64 tests with Netscout
 elif [[ "$driver" == "mlx5_core_arm" ]]; then
-	#server="ampere-mtsnow-01.knqe.eng.rdu2.dc.redhat.com"
-	#client="ampere-mtsnow-02.knqe.eng.rdu2.dc.redhat.com"
-	#server_driver="mlx5_core"
-	#client_driver="mlx5_core"
 	mlx_card_type="CX6-DX"
 	client="netqe49.knqe.eng.rdu2.dc.redhat.com" # ARM system
-	#client="netqe47.knqe.eng.rdu2.dc.redhat.com"
-	#client="netqe48.knqe.eng.rdu2.dc.redhat.com"
 	server="netqe24.knqe.eng.rdu2.dc.redhat.com" #x86_64 system
 	server_driver="mlx5_core"
 	client_driver="mlx5_core"
 	SERVER_NIC_MAC_STRING="0c:42:a1:22:a3:46" #0c:42:a1:22:a3:47
 	CLIENT_NIC_MAC_STRING="94:6d:ae:d9:23:f4" #94:6d:ae:d9:23:f5	
-	#server_pciid="15b3:1021" #CX7
-	#server_pciid="15b3:101d" #CX6-DX
-	#client_pciid="8086:1592" #E810
 	export RPM_OVS_AARCH64=${RPM_OVS_AARCH64:-$(echo $RPM_OVS | sed 's/x86_64/aarch64/g')}
 	export RPM_OVS_TCPDUMP_PYTHON_AARCH64=${RPM_OVS_TCPDUMP_PYTHON_AARCH64:-$(echo $RPM_OVS_TCPDUMP_PYTHON | sed 's/x86_64/aarch64/g')}
-	#export RPM_OVS_TCPDUMP_TEST_AARCH64=$(echo $RPM_OVS_TCPDUMP_TEST | sed 's/x86_64/aarch64/g')	
 	export ovs_rpm_name=$(echo $RPM_OVS_AARCH64 | awk -F "/" '{print $NF}')
-	#netscout_pair1="NETQE24_P4P1 NETQE49_CX7_P5P1" # netqe24 CX5 to netqe49 CX7 ARM
-	#netscout_pair2="NETQE24_P4P2 NETQE49_CX7_P5P2" # netqe24 CX5 to netqe49 CX7
-	GUEST_TYPE="container"
-	if [[ $compose_version -gt 8 ]]; then
-		server_nic_test="enp130s0f0np0"
-		client_nic_test="enP2p2s0f0np0"
-	else
-		server_nic_test="enp130s0f0"
-		client_nic_test="enP2p2s0f0"
-	fi
 	card_info="ARM CX6-DX"
 	
 elif [[ "$driver" == "ixgbe" ]]; then
-	server="netqe53.knqe.eng.rdu2.dc.redhat.com"
-	client="netqe50.knqe.eng.rdu2.dc.redhat.com"
-	server_driver="sfc"
+	server="003-r760-ee58u06.anl.eng.rdu2.dc.redhat.com"
+	client="004-r760-ee58u08.anl.eng.rdu2.dc.redhat.com"
+	server_driver="ixgbe"
 	client_driver="ixgbe"
+	SERVER_NIC_MAC_STRING="90:e2:ba:b8:70:74" #90:e2:ba:b8:70:75
+	CLIENT_NIC_MAC_STRING="90:e2:ba:b8:66:64" #90:e2:ba:b8:66:65
 	card_info="IXGBE"
 	HOST_TESTS_ONLY="yes"
 

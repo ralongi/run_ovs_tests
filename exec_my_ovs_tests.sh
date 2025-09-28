@@ -129,10 +129,10 @@ if [[ -z $RPM_DRIVERCTL ]]; then
 	export RPM_DRIVERCTL=$DRIVERCTL_RHEL9
 fi
 if [[ -z $RPM_OVS_TCPDUMP_PYTHON ]]; then
-	export RPM_OVS_TCPDUMP_PYTHON=$OVS340_PYTHON_25D_RHEL9
+	export RPM_OVS_TCPDUMP_PYTHON=$OVS350_PYTHON_25D_RHEL9
 fi
 if [[ -z $RPM_OVS_TCPDUMP_TEST ]]; then
-	export RPM_OVS_TCPDUMP_TEST=$OVS340_TCPDUMP_25D_RHEL9
+	export RPM_OVS_TCPDUMP_TEST=$OVS350_TCPDUMP_25D_RHEL9
 fi
 
 # RHEL composes
@@ -226,20 +226,20 @@ export SRC_NETPERF="http://netqe-infra01.knqe.eng.rdu2.dc.redhat.com/share/tools
 
 # VM image names
 if [[ -z $VM_IMAGE ]]; then
-	export VM_IMAGE="rhel9.6.qcow2"
+	export VM_IMAGE="rhel9.4.qcow2"
 else
 	export VM_IMAGE=$VM_IMAGE
 fi
 
 if [[ -z $VM_IMAGE_AARCH64 ]]; then
-	export VM_IMAGE_AARCH64="rhel9.6.aarch64.qcow2"
+	export VM_IMAGE_AARCH64="rhel9.4.aarch64.qcow2"
 else
 	export VM_IMAGE_AARCH64=$VM_IMAGE_AARCH64
 fi
 
 # OVS packages
 if [[ -z $RPM_OVS ]]; then
-	export RPM_OVS=$OVS340_25D_RHEL9
+	export RPM_OVS=$OVS350_25D_RHEL9
 else
 	export RPM_OVS=$RPM_OVS
 fi
@@ -267,7 +267,7 @@ else
 fi
 
 # OVN packages
-export RPM_OVN=$OVN340_25D_RHEL9 
+export RPM_OVN=$OVN350_25D_RHEL9 
 
 export BONDING_TESTS="ovs_test_bond_active_backup ovs_test_bond_set_active_slave ovs_test_bond_lacp_active ovs_test_bond_lacp_passive ovs_test_bond_balance_slb ovs_test_bond_balance_tcp"
 
@@ -279,7 +279,7 @@ export GRE_IPV6_TESTS="ovs_test_gre_ipv6 ovs_test_gre1_ipv6 ovs_test_gre_flow_ip
 
 #./test_exec_ovs_upgrade.sh
 #./test_exec_sanity_check.sh
-./test_exec_vm100.sh
+#./test_exec_vm100.sh
 #./test_exec_ovs_qos.sh
 #./test_exec_mcast_snoop.sh
 #./test_exec_power_cycle_crash.sh
@@ -311,7 +311,7 @@ export GRE_IPV6_TESTS="ovs_test_gre_ipv6 ovs_test_gre1_ipv6 ovs_test_gre_flow_ip
 ##./test_exec_topo.sh mlx5_core cx6 lx ovs_env=ovs-dpdk
 #./test_exec_topo.sh arm ovs_env=kernel
 
-#./test_exec_topo.sh mlx5_core_arm cx7 ovs_env=kernel
+./test_exec_topo.sh mlx5_core_arm cx7 ovs_env=kernel
 
 ##./test_exec_topo.sh arm ovs_env=ovs-dpdk
 #./test_exec_topo.sh mlx5_core cx7 ovs_env=kernel

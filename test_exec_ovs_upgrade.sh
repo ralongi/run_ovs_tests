@@ -48,31 +48,6 @@ elif [[ "$arch_test" == "aarch64" ]]; then
 	ovs_rpm_name=$(echo $RPM_OVS_AARCH64 | awk -F "/" '{print $NF}')
 fi
 
-RHEL_VER_MAJOR=$(echo $COMPOSE | awk -F "-" '{print $2}' | awk -F "." '{print $1}')
-RPM_LIST=$(grep -w $(basename $RPM_OVS | awk -F "-" '{print $1}') ~/fdp_package_list.sh | grep RHEL$RHEL_VER_MAJOR | egrep -vi 'python|tcpdump|selinux')
-
-LATEST_RPM_OVS=$(echo $RPM_LIST | awk '{print $NF}' | awk -F "=" '{print $NF}')
-RPM_OVS_VER=$(basename $RPM_OVS | awk -F ".el" '{print $1}' | awk -F "-" '{print $NF}')
-LATEST_RPM_OVS_VER=$(basename $LATEST_RPM_OVS | awk -F ".el" '{print $1}' | awk -F "-" '{print $NF}')
-
-if [[ -z $STARTING_RPM_OVS ]]; then
-	if [[ $(basename $LATEST_RPM_OVS) == $RPM_OVS ]]; then
-		STARTING_RPM_OVS=$(echo $RPM_LIST | awk {'print $(NF-1)}' | awk -F "=" '{print $NF}')
-	elif [[ $LATEST_RPM_OVS_VER -lt $RPM_OVS_VER ]]; then
-		STARTING_RPM_OVS=$LATEST_RPM_OVS
-	fi
-fi
-
-STARTING_STREAM=$(grep $STARTING_RPM_OVS ~/fdp_package_list.sh | awk -F "_" '{print $2}')
-
-if [[ -z $STARTING_RPM_OVS_SELINUX_EXTRA_POLICY ]]; then
-	STARTING_RPM_OVS_SELINUX_EXTRA_POLICY=$(grep $STARTING_STREAM ~/fdp_package_list.sh | grep -i selinux | grep RHEL$RHEL_VER_MAJOR | awk -F "=" '{print $NF}')
-fi
-
-if [[ -z $OVS_LATEST_STREAM_PKG ]]; then
-	OVS_LATEST_STREAM_PKG=$(grep OVS ~/fdp_package_list.sh | grep RHEL$RHEL_VER_MAJOR | egrep -vi 'python|tcpdump|selinux' | tail -n1 | awk -F "=" '{print $NF}')
-fi
-
 FDP_STREAM=$(basename $RPM_OVS | awk -F "-" '{print $1}' | sed s/openvswitch//g )
 
 if [[ "$arch_test" == "x86_64" ]]; then
