@@ -226,13 +226,13 @@ export SRC_NETPERF="http://netqe-infra01.knqe.eng.rdu2.dc.redhat.com/share/tools
 
 # VM image names
 if [[ -z $VM_IMAGE ]]; then
-	export VM_IMAGE="rhel9.4.qcow2"
+	export VM_IMAGE="rhel9.qcow2"
 else
 	export VM_IMAGE=$VM_IMAGE
 fi
 
 if [[ -z $VM_IMAGE_AARCH64 ]]; then
-	export VM_IMAGE_AARCH64="rhel9.4.aarch64.qcow2"
+	export VM_IMAGE_AARCH64="rhel9.aarch64.qcow2"
 else
 	export VM_IMAGE_AARCH64=$VM_IMAGE_AARCH64
 fi
@@ -280,7 +280,7 @@ export GRE_IPV6_TESTS="ovs_test_gre_ipv6 ovs_test_gre1_ipv6 ovs_test_gre_flow_ip
 #./test_exec_ovs_upgrade.sh
 #./test_exec_sanity_check.sh
 #./test_exec_vm100.sh
-#./test_exec_ovs_qos.sh
+./test_exec_ovs_qos.sh
 #./test_exec_mcast_snoop.sh
 #./test_exec_power_cycle_crash.sh
 #./test_exec_forward_bpdu.sh
@@ -311,7 +311,7 @@ export GRE_IPV6_TESTS="ovs_test_gre_ipv6 ovs_test_gre1_ipv6 ovs_test_gre_flow_ip
 ##./test_exec_topo.sh mlx5_core cx6 lx ovs_env=ovs-dpdk
 #./test_exec_topo.sh arm ovs_env=kernel
 
-./test_exec_topo.sh mlx5_core_arm cx7 ovs_env=kernel
+#./test_exec_topo.sh mlx5_core_arm cx7 ovs_env=kernel
 
 ##./test_exec_topo.sh arm ovs_env=ovs-dpdk
 #./test_exec_topo.sh mlx5_core cx7 ovs_env=kernel

@@ -66,7 +66,7 @@ fi
 pushd "$GITHUB_HOME"/run_ovs_tests &>/dev/null
 /bin/cp -f exec_my_ovs_tests_template.sh exec_my_ovs_tests.sh
 sed -i "s/FDP_RELEASE_VALUE/$FDP_RELEASE/g" exec_my_ovs_tests.sh
-sed -i "s/RHEL_VER_VALUE/$RHEL_VER/g" exec_my_ovs_tests.sh
+sed -i "s/RHEL_VER_VALUE/$RHEL_VER_MAJOR/g" exec_my_ovs_tests.sh
 sed -i "s/FDP_STREAM_VALUE/$FDP_STREAM2/g" exec_my_ovs_tests.sh
 sed -i "s/YEAR_VALUE/$YEAR/g" exec_my_ovs_tests.sh
 sed -i "s/RHEL_VER_MAJOR_VALUE/$RHEL_VER_MAJOR/g" exec_my_ovs_tests.sh
