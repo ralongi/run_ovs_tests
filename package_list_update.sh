@@ -8,8 +8,10 @@ $dbg_flag
 github_home=${github_home:-~/github}
 script_directory="$github_home"/run_ovs_tests
 fdp_release=$1
-if [[ $# -lt 1 ]]; then echo "Please provide FDP release designation without 'FDP' (25.C, 25.c, etc):"; read fdp_release; fi
-fdp_release=$(echo "$fdp_release" | awk '{print toupper($0)}')
+if [[ $# -lt 1 ]]; then echo "Please provide FDP release designation without 'OVS' (25.10, 25.11, etc):"; read fdp_release; fi
+#fdp_release=$(echo "$fdp_release" | awk '{print toupper($0)}')
+echo "FDP Release: OVS-$fdp_release"
+
 if [[ ! $(echo "$fdp_release" | grep '\.') ]]; then
 	echo "Please include the period in the FDP release designation without 'FDP' (25.C, 25.c, etc)"
 	exit 0
@@ -20,7 +22,7 @@ new_package_template_file="$script_directory/new_package_list_template.sh"
 new_package_list_temp_file="$script_directory/new_package_list_temp.sh"
 new_package_list_file="$script_directory/new_package_list.sh"
 fdp_errata_list_file=$script_directory/errata_list.txt
-package_list_file=$script_directory/package_list.txt
+package_list_file=~/package_list.txt
 upload_package_file=${upload_package_file:-"yes"}
 
 batch=$(curl -su : --negotiate https://errata.devel.redhat.com/advisory/filters/4400 | grep "$fdp_release" |awk -F '"' '{print $4}' | awk -F '/' '{print $NF}' | head -1)
@@ -33,32 +35,32 @@ sed -i "s/$(echo $1 | sed -e 's/\([[\/.*]\|\]\)/\\&/g')/$(echo $2 | sed -e 's/[\
 
 rm -f $new_package_list_temp_file $new_package_list_file
 echo "" >> $new_package_list_file
-echo "# FDP $fdp_release Packages" >> $new_package_list_file
+echo "# OVS-$fdp_release Packages" >> $new_package_list_file
 
 pushd $script_directory
 
 selinux_version=$(curl -sL https://download.devel.redhat.com/brewroot/packages/openvswitch-selinux-extra-policy/1.0/ | grep el7 | tail -n1 | awk -F '>' '{print $6}' | awk -F '"' '{print $2}' | tr -d /)
 package_url=https://download.devel.redhat.com/brewroot/packages/openvswitch-selinux-extra-policy/1.0/$selinux_version/noarch/openvswitch-selinux-extra-policy-1.0-$selinux_version.noarch.rpm
 http_code=$(curl --silent --head --write-out '%{http_code}' "$package_url" | grep HTTP | awk '{print $2}')
-if [[ "$http_code" -ne 200 ]]; then echo "$package_url is NOT a valid link.  Exiting..."; exit 1; fi
+if [[ "$http_code" -ne 200 ]] && [[ "$http_code" -ne 302 ]]; then echo "$package_url is NOT a valid link.  Exiting..."; exit 1; fi
 echo "OVS_SELINUX_$fdp_release_short"_RHEL7=${package_url} >> $new_package_list_file
 
 selinux_version=$(curl -sL https://download.devel.redhat.com/brewroot/packages/openvswitch-selinux-extra-policy/1.0/ | grep el8 | tail -n1 | awk -F '>' '{print $6}' | awk -F '"' '{print $2}' | tr -d /)
 package_url=https://download.devel.redhat.com/brewroot/packages/openvswitch-selinux-extra-policy/1.0/$selinux_version/noarch/openvswitch-selinux-extra-policy-1.0-$selinux_version.noarch.rpm
 http_code=$(curl --silent --head --write-out '%{http_code}' "$package_url" | grep HTTP | awk '{print $2}')
-if [[ "$http_code" -ne 200 ]]; then echo "$package_url is NOT a valid link.  Exiting..."; exit 1; fi
+if [[ "$http_code" -ne 200 ]] && [[ "$http_code" -ne 302 ]]; then echo "$package_url is NOT a valid link.  Exiting..."; exit 1; fi
 echo "OVS_SELINUX_$fdp_release_short"_RHEL8=${package_url} >> $new_package_list_file
 
 selinux_version=$(curl -sL https://download.devel.redhat.com/brewroot/packages/openvswitch-selinux-extra-policy/1.0/ | grep el9 | tail -n1 | awk -F '>' '{print $6}' | awk -F '"' '{print $2}' | tr -d /)
 package_url=https://download.devel.redhat.com/brewroot/packages/openvswitch-selinux-extra-policy/1.0/$selinux_version/noarch/openvswitch-selinux-extra-policy-1.0-$selinux_version.noarch.rpm
 http_code=$(curl --silent --head --write-out '%{http_code}' "$package_url" | grep HTTP | awk '{print $2}')
-if [[ "$http_code" -ne 200 ]]; then echo "$package_url is NOT a valid link.  Exiting..."; exit 1; fi
+if [[ "$http_code" -ne 200 ]] && [[ "$http_code" -ne 302 ]]; then echo "$package_url is NOT a valid link.  Exiting..."; exit 1; fi
 echo "OVS_SELINUX_$fdp_release_short"_RHEL9=${package_url} >> $new_package_list_file
 
 selinux_version=$(curl -sL https://download.devel.redhat.com/brewroot/packages/openvswitch-selinux-extra-policy/1.0/ | grep el10 | tail -n1 | awk -F '>' '{print $6}' | awk -F '"' '{print $2}' | tr -d /)
 package_url=https://download.devel.redhat.com/brewroot/packages/openvswitch-selinux-extra-policy/1.0/$selinux_version/noarch/openvswitch-selinux-extra-policy-1.0-$selinux_version.noarch.rpm
 http_code=$(curl --silent --head --write-out '%{http_code}' "$package_url" | grep HTTP | awk '{print $2}')
-if [[ "$http_code" -ne 200 ]]; then echo "$package_url is NOT a valid link.  Exiting..."; exit 1; fi
+if [[ "$http_code" -ne 200 ]] && [[ "$http_code" -ne 302 ]]; then echo "$package_url is NOT a valid link.  Exiting..."; exit 1; fi
 echo "OVS_SELINUX_$fdp_release_short"_RHEL10=${package_url} >> $new_package_list_file
 
 for i in $errata_list; do

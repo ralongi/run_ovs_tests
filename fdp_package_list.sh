@@ -987,3 +987,15 @@ OVS360_TCPDUMP_25D_RHEL9=https://download-01.beak-001.prod.iad2.dc.redhat.com/br
 OVS360_25D_RHEL10=https://download-01.beak-001.prod.iad2.dc.redhat.com/brewroot/vol/rhel-10/packages/openvswitch3.6/3.6.0/0.1.el10fdp/x86_64/openvswitch3.6-3.6.0-0.1.el10fdp.x86_64.rpm
 OVS360_PYTHON_25D_RHEL10=https://download-01.beak-001.prod.iad2.dc.redhat.com/brewroot/vol/rhel-10/packages/openvswitch3.6/3.6.0/0.1.el10fdp/x86_64/python3-openvswitch3.6-3.6.0-0.1.el10fdp.x86_64.rpm
 OVS360_TCPDUMP_25D_RHEL10=https://download-01.beak-001.prod.iad2.dc.redhat.com/brewroot/vol/rhel-10/packages/openvswitch3.6/3.6.0/0.1.el10fdp/noarch/openvswitch3.6-test-3.6.0-0.1.el10fdp.noarch.rpm
+
+# FDP 25.10 Packages
+OVS_SELINUX_2510_RHEL7=https://download.devel.redhat.com/brewroot/packages/openvswitch-selinux-extra-policy/1.0/18.el7fdp/noarch/openvswitch-selinux-extra-policy-1.0-18.el7fdp.noarch.rpm
+OVS_SELINUX_2510_RHEL8=https://download.devel.redhat.com/brewroot/packages/openvswitch-selinux-extra-policy/1.0/31.el8fdp/noarch/openvswitch-selinux-extra-policy-1.0-31.el8fdp.noarch.rpm
+OVS_SELINUX_2510_RHEL9=https://download.devel.redhat.com/brewroot/packages/openvswitch-selinux-extra-policy/1.0/39.el9fdp/noarch/openvswitch-selinux-extra-policy-1.0-39.el9fdp.noarch.rpm
+OVS_SELINUX_2510_RHEL10=https://download.devel.redhat.com/brewroot/packages/openvswitch-selinux-extra-policy/1.0/39.el10fdp/noarch/openvswitch-selinux-extra-policy-1.0-39.el10fdp.noarch.rpm
+OVS330_2510_RHEL9=https://download-01.beak-001.prod.iad2.dc.redhat.com/brewroot/vol/rhel-9/packages/openvswitch3.3/3.3.6/141.el9fdp/x86_64/openvswitch3.3-3.3.6-141.el9fdp.x86_64.rpm
+OVS330_PYTHON_2510_RHEL9=https://download-01.beak-001.prod.iad2.dc.redhat.com/brewroot/vol/rhel-9/packages/openvswitch3.3/3.3.6/141.el9fdp/x86_64/python3-openvswitch3.3-3.3.6-141.el9fdp.x86_64.rpm
+OVS330_TCPDUMP_2510_RHEL9=https://download-01.beak-001.prod.iad2.dc.redhat.com/brewroot/vol/rhel-9/packages/openvswitch3.3/3.3.6/141.el9fdp/noarch/openvswitch3.3-test-3.3.6-141.el9fdp.noarch.rpm
+OVS350_2510_RHEL9=https://download-01.beak-001.prod.iad2.dc.redhat.com/brewroot/vol/rhel-9/packages/openvswitch3.5/3.5.2/51.el9fdp/x86_64/openvswitch3.5-3.5.2-51.el9fdp.x86_64.rpm
+OVS350_PYTHON_2510_RHEL9=https://download-01.beak-001.prod.iad2.dc.redhat.com/brewroot/vol/rhel-9/packages/openvswitch3.5/3.5.2/51.el9fdp/x86_64/python3-openvswitch3.5-3.5.2-51.el9fdp.x86_64.rpm
+OVS350_TCPDUMP_2510_RHEL9=https://download-01.beak-001.prod.iad2.dc.redhat.com/brewroot/vol/rhel-9/packages/openvswitch3.5/3.5.2/51.el9fdp/noarch/openvswitch3.5-test-3.5.2-51.el9fdp.noarch.rpm

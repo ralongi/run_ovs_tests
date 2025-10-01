@@ -280,7 +280,7 @@ export GRE_IPV6_TESTS="ovs_test_gre_ipv6 ovs_test_gre1_ipv6 ovs_test_gre_flow_ip
 #./test_exec_ovs_upgrade.sh
 #./test_exec_sanity_check.sh
 #./test_exec_vm100.sh
-./test_exec_ovs_qos.sh
+#./test_exec_ovs_qos.sh
 #./test_exec_mcast_snoop.sh
 #./test_exec_power_cycle_crash.sh
 #./test_exec_forward_bpdu.sh
@@ -351,7 +351,7 @@ export GRE_IPV6_TESTS="ovs_test_gre_ipv6 ovs_test_gre1_ipv6 ovs_test_gre_flow_ip
 #./test_exec_topo.sh nfp ovs_env=kernel
 ##./test_exec_topo.sh nfp ovs_env=ovs-dpdk
 
-#./test_exec_ovs_memory_leak_soak.sh
+./test_exec_ovs_memory_leak_soak.sh
 #./test_exec_ovn_memory_leak_soak.sh
 
 #./test_exec_regression_bug.sh
