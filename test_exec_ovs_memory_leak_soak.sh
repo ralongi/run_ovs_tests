@@ -56,8 +56,6 @@ elif [[ "$dut" == "netqe49.knqe.eng.rdu2.dc.redhat.com" ]]; then
 	NIC_MAC_STRING="94:6d:ae:d9:23:f4 94:6d:ae:d9:23:f5"
 fi
 
-echo "kernel_tests_home: $KERNEL_TESTS_HOME"
-exit 0
 if [[ "$arch_test" == "x86_64" ]]; then
 	if [[ "$dut" == "wsfd-advnetlab34.anl.eng.rdu2.dc.redhat.com" ]]; then
 		if [[ $image_mode == "yes" ]]; then
