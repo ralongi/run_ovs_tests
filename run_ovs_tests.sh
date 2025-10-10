@@ -53,6 +53,7 @@ popd &>/dev/null
 
 export FDP_RELEASE=${FDP_RELEASE:-"$1"}
 export FDP_RELEASE=$(echo $FDP_RELEASE | tr '[:lower:]' '[:upper:]')
+export FDP_RELEASE=$(echo $FDP_RELEASE | tr -d '.')
 
 export RHEL_VER=${RHEL_VER:-"$2"}
 export RHEL_VER_MAJOR=$(echo $RHEL_VER | awk -F "." '{print $1}')

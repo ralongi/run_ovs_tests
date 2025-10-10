@@ -129,10 +129,10 @@ if [[ -z $RPM_DRIVERCTL ]]; then
 	export RPM_DRIVERCTL=$DRIVERCTL_RHEL9
 fi
 if [[ -z $RPM_OVS_TCPDUMP_PYTHON ]]; then
-	export RPM_OVS_TCPDUMP_PYTHON=$OVS330_PYTHON_25.10_RHEL9
+	export RPM_OVS_TCPDUMP_PYTHON=$OVS330_PYTHON_2510_RHEL9
 fi
 if [[ -z $RPM_OVS_TCPDUMP_TEST ]]; then
-	export RPM_OVS_TCPDUMP_TEST=$OVS330_TCPDUMP_25.10_RHEL9
+	export RPM_OVS_TCPDUMP_TEST=$OVS330_TCPDUMP_2510_RHEL9
 fi
 
 # RHEL composes
@@ -239,7 +239,7 @@ fi
 
 # OVS packages
 if [[ -z $RPM_OVS ]]; then
-	export RPM_OVS=$OVS330_25.10_RHEL9
+	export RPM_OVS=$OVS330_2510_RHEL9
 else
 	export RPM_OVS=$RPM_OVS
 fi
@@ -261,13 +261,13 @@ fi
 
 # SELinux packages
 if [[ -z $RPM_OVS_SELINUX_EXTRA_POLICY ]]; then
-	export RPM_OVS_SELINUX_EXTRA_POLICY=$OVS_SELINUX_25.10_RHEL9
+	export RPM_OVS_SELINUX_EXTRA_POLICY=$OVS_SELINUX_2510_RHEL9
 else
 	export RPM_OVS_SELINUX_EXTRA_POLICY=$RPM_OVS_SELINUX_EXTRA_POLICY
 fi
 
 # OVN packages
-export RPM_OVN=$OVN330_25.10_RHEL9 
+export RPM_OVN=$OVN330_2510_RHEL9 
 
 export BONDING_TESTS="ovs_test_bond_active_backup ovs_test_bond_set_active_slave ovs_test_bond_lacp_active ovs_test_bond_lacp_passive ovs_test_bond_balance_slb ovs_test_bond_balance_tcp"
 
