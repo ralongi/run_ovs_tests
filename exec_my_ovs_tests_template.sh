@@ -244,21 +244,6 @@ else
 	export RPM_OVS=$RPM_OVS
 fi
 
-# OVN packages
-# If there is no value assigned for OVN packages, take the latest available
-
-if [[ -z $RPM_OVN_COMMON ]]; then
-	export RPM_OVN_COMMON=$(grep -i $FDP_RELEASE  ~/fdp_package_list.sh | grep -i OVN_COMMON | grep -i RHEL$RHEL_VER_MAJOR | awk -F '=' '{print $NF}' | tail -n1)
-fi
-
-if [[ -z $RPM_OVN_CENTRAL ]]; then
-	export RPM_OVN_CENTRAL=$(grep -i $FDP_RELEASE  ~/fdp_package_list.sh | grep -i OVN_CENTRAL | grep -i RHEL$RHEL_VER_MAJOR | awk -F '=' '{print $NF}' | tail -n1)
-fi
-
-if [[ -z $RPM_OVN_HOST ]]; then
-	export RPM_OVN_HOST=$(grep -i $FDP_RELEASE  ~/fdp_package_list.sh | grep -i OVN_HOST | grep -i RHEL$RHEL_VER_MAJOR | awk -F '=' '{print $NF}' | tail -n1)
-fi
-
 # SELinux packages
 if [[ -z $RPM_OVS_SELINUX_EXTRA_POLICY ]]; then
 	export RPM_OVS_SELINUX_EXTRA_POLICY=$OVS_SELINUX_FDP_RELEASE_VALUE_RHELRHEL_VER_MAJOR_VALUE

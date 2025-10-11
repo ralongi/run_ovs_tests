@@ -17,6 +17,8 @@ export script_directory=${script_directory:-$GITHUB_HOME/run_ovs_tests}
 dbg_flag=${dbg_flag:-"set +x"}
 $dbg_flag
 
+check_args=${check_args:-"yes"} # "export check_args=no" to skip for args to script for memory_leak_soak
+
 display_usage()
 {
 	echo "This script will kick off OVS tests based on parameters provided."
@@ -26,8 +28,12 @@ display_usage()
 	exit 0
 }
 
-if [[ $# -lt 3 ]] || [[ $1 = "-h" ]] || [[ $1 = "--help" ]]	|| [[ $1 = "-?" ]]; then
-	display_usage
+if [[ $check_args != "no" ]]; then
+	if [[ $# -lt 3 ]] || [[ $1 = "-h" ]] || [[ $1 = "--help" ]]	|| [[ $1 = "-?" ]]; then
+		display_usage
+	fi
+else
+	export RHEL_VER=$(echo $COMPOSE | awk -F '-' '{print $2}' | awk -F '.' '{print $1"."$2}') 
 fi
 
 if [[ -z $tests ]]; then
@@ -51,17 +57,19 @@ pushd "$KERNEL_TESTS_HOME"/kernel/networking &>/dev/null
 git status | grep 'working tree clean' || git pull > /dev/null
 popd &>/dev/null
 
-export FDP_RELEASE=${FDP_RELEASE:-"$1"}
-export FDP_RELEASE=$(echo $FDP_RELEASE | tr '[:lower:]' '[:upper:]')
-export FDP_RELEASE=$(echo $FDP_RELEASE | tr -d '.')
+if [[ $check_args != "no" ]]; then
+	export FDP_RELEASE=${FDP_RELEASE:-"$1"}
+	export FDP_RELEASE=$(echo $FDP_RELEASE | tr '[:lower:]' '[:upper:]')
+	export FDP_RELEASE=$(echo $FDP_RELEASE | tr -d '.')
 
-export RHEL_VER=${RHEL_VER:-"$2"}
-export RHEL_VER_MAJOR=$(echo $RHEL_VER | awk -F "." '{print $1}')
+	export RHEL_VER=${RHEL_VER:-"$2"}
+	export RHEL_VER_MAJOR=$(echo $RHEL_VER | awk -F "." '{print $1}')
 
-export FDP_STREAM=${FDP_STREAM:-"$3"}
-export FDP_STREAM2=$(echo $FDP_STREAM | tr -d '.')
-if [[ $FDP_STREAM2 -gt 213 ]]; then
-	YEAR=$(grep -i ovn fdp_package_list.sh | grep $FDP_RELEASE | awk -F "_" '{print $3}' | grep -v 213 | tail -n1)
+	export FDP_STREAM=${FDP_STREAM:-"$3"}
+	export FDP_STREAM2=$(echo $FDP_STREAM | tr -d '.')
+	if [[ $FDP_STREAM2 -gt 213 ]]; then
+		YEAR=$(grep -i ovn fdp_package_list.sh | grep $FDP_RELEASE | awk -F "_" '{print $3}' | grep -v 213 | tail -n1)
+	fi
 fi
 
 pushd "$GITHUB_HOME"/run_ovs_tests &>/dev/null

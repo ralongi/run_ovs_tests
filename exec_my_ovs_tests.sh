@@ -126,13 +126,13 @@ get_latest_driverctl()
 get_latest_driverctl
 
 if [[ -z $RPM_DRIVERCTL ]]; then
-	export RPM_DRIVERCTL=$DRIVERCTL_RHEL9
+	export RPM_DRIVERCTL=$DRIVERCTL_RHEL
 fi
 if [[ -z $RPM_OVS_TCPDUMP_PYTHON ]]; then
-	export RPM_OVS_TCPDUMP_PYTHON=$OVS330_PYTHON_2510_RHEL9
+	export RPM_OVS_TCPDUMP_PYTHON=$OVS_PYTHON__RHEL
 fi
 if [[ -z $RPM_OVS_TCPDUMP_TEST ]]; then
-	export RPM_OVS_TCPDUMP_TEST=$OVS330_TCPDUMP_2510_RHEL9
+	export RPM_OVS_TCPDUMP_TEST=$OVS_TCPDUMP__RHEL
 fi
 
 # RHEL composes
@@ -226,48 +226,33 @@ export SRC_NETPERF="http://netqe-infra01.knqe.eng.rdu2.dc.redhat.com/share/tools
 
 # VM image names
 if [[ -z $VM_IMAGE ]]; then
-	export VM_IMAGE="rhel9.qcow2"
+	export VM_IMAGE="rhel.qcow2"
 else
 	export VM_IMAGE=$VM_IMAGE
 fi
 
 if [[ -z $VM_IMAGE_AARCH64 ]]; then
-	export VM_IMAGE_AARCH64="rhel9.aarch64.qcow2"
+	export VM_IMAGE_AARCH64="rhel.aarch64.qcow2"
 else
 	export VM_IMAGE_AARCH64=$VM_IMAGE_AARCH64
 fi
 
 # OVS packages
 if [[ -z $RPM_OVS ]]; then
-	export RPM_OVS=$OVS330_2510_RHEL9
+	export RPM_OVS=$OVS__RHEL
 else
 	export RPM_OVS=$RPM_OVS
 fi
 
-# OVN packages
-# If there is no value assigned for OVN packages, take the latest available
-
-if [[ -z $RPM_OVN_COMMON ]]; then
-	export RPM_OVN_COMMON=$(grep -i $FDP_RELEASE  ~/fdp_package_list.sh | grep -i OVN_COMMON | grep -i RHEL$RHEL_VER_MAJOR | awk -F '=' '{print $NF}' | tail -n1)
-fi
-
-if [[ -z $RPM_OVN_CENTRAL ]]; then
-	export RPM_OVN_CENTRAL=$(grep -i $FDP_RELEASE  ~/fdp_package_list.sh | grep -i OVN_CENTRAL | grep -i RHEL$RHEL_VER_MAJOR | awk -F '=' '{print $NF}' | tail -n1)
-fi
-
-if [[ -z $RPM_OVN_HOST ]]; then
-	export RPM_OVN_HOST=$(grep -i $FDP_RELEASE  ~/fdp_package_list.sh | grep -i OVN_HOST | grep -i RHEL$RHEL_VER_MAJOR | awk -F '=' '{print $NF}' | tail -n1)
-fi
-
 # SELinux packages
 if [[ -z $RPM_OVS_SELINUX_EXTRA_POLICY ]]; then
-	export RPM_OVS_SELINUX_EXTRA_POLICY=$OVS_SELINUX_2510_RHEL9
+	export RPM_OVS_SELINUX_EXTRA_POLICY=$OVS_SELINUX__RHEL
 else
 	export RPM_OVS_SELINUX_EXTRA_POLICY=$RPM_OVS_SELINUX_EXTRA_POLICY
 fi
 
 # OVN packages
-export RPM_OVN=$OVN330_2510_RHEL9 
+export RPM_OVN=$OVN__RHEL 
 
 export BONDING_TESTS="ovs_test_bond_active_backup ovs_test_bond_set_active_slave ovs_test_bond_lacp_active ovs_test_bond_lacp_passive ovs_test_bond_balance_slb ovs_test_bond_balance_tcp"
 
@@ -287,8 +272,8 @@ export GRE_IPV6_TESTS="ovs_test_gre_ipv6 ovs_test_gre1_ipv6 ovs_test_gre_flow_ip
 #./test_exec_of_rules.sh
 
 # To run just the ovs_test_ns_enable_nomlockall_CPUAffinity_test for topo, add "cpu" to the string of arguments
-./test_exec_topo.sh ixgbe ovs_env=kernel
-#./test_exec_topo.sh ixgbe ovs_env=ovs-dpdk
+#./test_exec_topo.sh ixgbe ovs_env=kernel
+##./test_exec_topo.sh ixgbe ovs_env=ovs-dpdk
 #./test_exec_topo.sh i40e ovs_env=kernel
 ##./test_exec_topo.sh i40e ovs_env=ovs-dpdk
 #./test_exec_topo.sh e810_ice ovs_env=kernel
@@ -342,16 +327,16 @@ export GRE_IPV6_TESTS="ovs_test_gre_ipv6 ovs_test_gre1_ipv6 ovs_test_gre_flow_ip
 #./test_exec_endurance.sh bf3
 #./test_exec_perf_ci.sh bf3
 
-./test_exec_topo.sh enic ovs_env=kernel
-#./test_exec_topo.sh enic ovs_env=ovs-dpdk
-./test_exec_topo.sh qede ovs_env=kernel
-#./test_exec_topo.sh qede ovs_env=ovs-dpdk
-./test_exec_topo.sh bnxt_en ovs_env=kernel
-#./test_exec_topo.sh bnxt_en ovs_env=ovs-dpdk
+#./test_exec_topo.sh enic ovs_env=kernel
+##./test_exec_topo.sh enic ovs_env=ovs-dpdk
+#./test_exec_topo.sh qede ovs_env=kernel
+##./test_exec_topo.sh qede ovs_env=ovs-dpdk
+#./test_exec_topo.sh bnxt_en ovs_env=kernel
+##./test_exec_topo.sh bnxt_en ovs_env=ovs-dpdk
 #./test_exec_topo.sh nfp ovs_env=kernel
 ##./test_exec_topo.sh nfp ovs_env=ovs-dpdk
 
-#./test_exec_ovs_memory_leak_soak.sh
+./test_exec_ovs_memory_leak_soak.sh
 #./test_exec_ovn_memory_leak_soak.sh
 
 #./test_exec_regression_bug.sh
