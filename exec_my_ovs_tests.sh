@@ -126,13 +126,13 @@ get_latest_driverctl()
 get_latest_driverctl
 
 if [[ -z $RPM_DRIVERCTL ]]; then
-	export RPM_DRIVERCTL=$DRIVERCTL_RHEL
+	export RPM_DRIVERCTL=$DRIVERCTL_RHEL9
 fi
 if [[ -z $RPM_OVS_TCPDUMP_PYTHON ]]; then
-	export RPM_OVS_TCPDUMP_PYTHON=$OVS_PYTHON__RHEL
+	export RPM_OVS_TCPDUMP_PYTHON=$OVS350_PYTHON_2510_RHEL9
 fi
 if [[ -z $RPM_OVS_TCPDUMP_TEST ]]; then
-	export RPM_OVS_TCPDUMP_TEST=$OVS_TCPDUMP__RHEL
+	export RPM_OVS_TCPDUMP_TEST=$OVS350_TCPDUMP_2510_RHEL9
 fi
 
 # RHEL composes
@@ -226,33 +226,33 @@ export SRC_NETPERF="http://netqe-infra01.knqe.eng.rdu2.dc.redhat.com/share/tools
 
 # VM image names
 if [[ -z $VM_IMAGE ]]; then
-	export VM_IMAGE="rhel.qcow2"
+	export VM_IMAGE="rhel9.qcow2"
 else
 	export VM_IMAGE=$VM_IMAGE
 fi
 
 if [[ -z $VM_IMAGE_AARCH64 ]]; then
-	export VM_IMAGE_AARCH64="rhel.aarch64.qcow2"
+	export VM_IMAGE_AARCH64="rhel9.aarch64.qcow2"
 else
 	export VM_IMAGE_AARCH64=$VM_IMAGE_AARCH64
 fi
 
 # OVS packages
 if [[ -z $RPM_OVS ]]; then
-	export RPM_OVS=$OVS__RHEL
+	export RPM_OVS=$OVS350_2510_RHEL9
 else
 	export RPM_OVS=$RPM_OVS
 fi
 
 # SELinux packages
 if [[ -z $RPM_OVS_SELINUX_EXTRA_POLICY ]]; then
-	export RPM_OVS_SELINUX_EXTRA_POLICY=$OVS_SELINUX__RHEL
+	export RPM_OVS_SELINUX_EXTRA_POLICY=$OVS_SELINUX_2510_RHEL9
 else
 	export RPM_OVS_SELINUX_EXTRA_POLICY=$RPM_OVS_SELINUX_EXTRA_POLICY
 fi
 
 # OVN packages
-export RPM_OVN=$OVN__RHEL 
+export RPM_OVN=$OVN350_2510_RHEL9 
 
 export BONDING_TESTS="ovs_test_bond_active_backup ovs_test_bond_set_active_slave ovs_test_bond_lacp_active ovs_test_bond_lacp_passive ovs_test_bond_balance_slb ovs_test_bond_balance_tcp"
 
@@ -262,7 +262,7 @@ export BONDING_CPU_TESTS="ovs_test_bond_active_backup ovs_test_bond_set_active_s
 
 export GRE_IPV6_TESTS="ovs_test_gre_ipv6 ovs_test_gre1_ipv6 ovs_test_gre_flow_ipv6 ovs_test_vlan_gre_ipv6 ovs_test_vlan_gre1_ipv6 ovs_test_vm_gre_ipv6 ovs_test_vm_gre1_ipv6 ovs_test_vm_gre_flow_ipv6 ovs_test_vm_vlan_gre_ipv6 ovs_test_vm_vlan_gre1_ipv6"
 
-#./test_exec_ovs_upgrade.sh
+./test_exec_ovs_upgrade.sh
 #./test_exec_sanity_check.sh
 #./test_exec_vm100.sh
 #./test_exec_ovs_qos.sh
@@ -336,7 +336,7 @@ export GRE_IPV6_TESTS="ovs_test_gre_ipv6 ovs_test_gre1_ipv6 ovs_test_gre_flow_ip
 #./test_exec_topo.sh nfp ovs_env=kernel
 ##./test_exec_topo.sh nfp ovs_env=ovs-dpdk
 
-./test_exec_ovs_memory_leak_soak.sh
+#./test_exec_ovs_memory_leak_soak.sh
 #./test_exec_ovn_memory_leak_soak.sh
 
 #./test_exec_regression_bug.sh
