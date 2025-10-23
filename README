@@ -41,3 +41,8 @@ package_list_update.sh
 - Usage: ./package_list_update.sh 25.11
 - The script will query the errata tool to determine the packages to be used
 and will then update fdp_package_list.sh with this information.
+
+NOTE: Additional information for running test_exec_ovs_memory_leak_soak.sh can
+be found here:
+https://docs.google.com/spreadsheets/d/
+18RtdfX-nBXKwyGR2lsIIbO-DZLxCt721hdI9LU9Z9FY/edit?usp=sharing
