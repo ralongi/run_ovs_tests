@@ -1,0 +1,43 @@
+### README for using files in git@github.com:ralongi/run_ovs_tests.git ###
+
+The files in this repo are to be used for running OVS tests when using 
+fdp-ci-test may not be feasible (i.e. when running testsoutside of an OVS FDP
+release such as RHEL CTC/RC test cycles, NIC or systemcertification testing,
+"one-off" testing, etc.).
+
+Current list of tests:
+
+test_exec_forward_bpdu.sh          
+test_exec_ovs_qos.sh            
+test_exec_topo.sh
+test_exec_mcast_snoop.sh           
+test_exec_ovs_upgrade.sh        
+test_exec_vm100.sh
+test_exec_of_rules.sh              
+test_exec_power_cycle_crash.sh
+test_exec_ovs_memory_leak_soak.sh
+test_exec_sanity_check.sh
+
+Other files:
+
+run_ovs_tests.sh
+- Main script file used to launch tests
+- ./run_ovs_tests.sh -h will provide usage information
+
+exec_my_ovs_tests_template.sh, exec_my_ovs_tests.sh, get_errata_packages.sh,
+get_zstream_compose_function.sh
+- These files are invoked when run_ovs_tests.sh is run
+
+fdp_package_list.sh
+- Contains list of OVS packages.
+- Is used by run_ovs_tests.sh if no OVS package files have already been
+specified via the export command (i.e. 
+export RPM_OVS="https://download-01.beak-001.prod.iad2.dc.redhat.com/brewroot
+/vol/rhel-9/packages/openvswitch3.3/3.3.6/141.el9fdp/aarch64/
+openvswitch3.3-3.3.6-141.el9fdp.aarch64.rpm")
+
+package_list_update.sh
+- Script used to update the fdp_package_list.sh file.
+- Usage: ./package_list_update.sh 25.11
+- The script will query the errata tool to determine the packages to be used
+and will then update fdp_package_list.sh with this information.
