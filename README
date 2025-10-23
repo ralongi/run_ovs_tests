@@ -2,8 +2,33 @@
 
 The files in this repo are to be used for running OVS tests when using 
 fdp-ci-test may not be feasible (i.e. when running testsoutside of an OVS FDP
-release such as RHEL CTC/RC test cycles, NIC or systemcertification testing,
+release such as RHEL CTC/RC test cycles, NIC or system certification testing,
 "one-off" testing, etc.).
+
+- Main script file used to launch tests
+- ./run_ovs_tests.sh -h will provide usage information
+
+- Export list of tests to be run via "export tests=<list of tests to be run>
+- Example: export tests="test_exec_forward_bpdu test_exec_ovs_qos test_exec_of_rules"
+
+- Export RHEL compose to be used via "export COMPOSE=<RHEL compose>
+- Example: export COMPOSE=RHEL-9.4.0-updates-20251021.0
+
+- Optional:
+- Export OVS RPMs to be used if not using those specified in fdp_package_list.sh
+(see below)
+- Example: 
+export RPM_OVS="https://download-01.beak-001.prod.iad2.dc.redhat.com/brewroot
+/vol/rhel-9/packages/openvswitch3.3/3.3.6/141.el9fdp/aarch64/
+openvswitch3.3-3.3.6-141.el9fdp.aarch64.rpm"
+
+Optional:
+- Export any special info to be appended to the beaker white board
+- Example: export special_info="[rhel-10.1] RC compose qualification (Tier1
+ Testing) - OVS Kernel Topology, https://issues.redhat.com/browse/FDPQE-1590"
+ 
+Launch jobs using run_ovs_tests.sh <OVS release> <RHEL version> <OVS version>
+- Example: ./run_ovs_tests.sh 25.11 9.4 3.50
 
 Current list of tests:
 
@@ -20,10 +45,6 @@ test_exec_sanity_check.sh
 
 Other files:
 
-run_ovs_tests.sh
-- Main script file used to launch tests
-- ./run_ovs_tests.sh -h will provide usage information
-
 exec_my_ovs_tests_template.sh, exec_my_ovs_tests.sh, get_errata_packages.sh,
 get_zstream_compose_function.sh
 - These files are invoked when run_ovs_tests.sh is run
@@ -34,7 +55,7 @@ fdp_package_list.sh
 specified via the export command (i.e. 
 export RPM_OVS="https://download-01.beak-001.prod.iad2.dc.redhat.com/brewroot
 /vol/rhel-9/packages/openvswitch3.3/3.3.6/141.el9fdp/aarch64/
-openvswitch3.3-3.3.6-141.el9fdp.aarch64.rpm")
+openvswitch3.3-3.3.6-141.el9fdp.aarch64.rpm"
 
 package_list_update.sh
 - Script used to update the fdp_package_list.sh file.
