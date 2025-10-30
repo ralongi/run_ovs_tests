@@ -126,13 +126,13 @@ get_latest_driverctl()
 get_latest_driverctl
 
 if [[ -z $RPM_DRIVERCTL ]]; then
-	export RPM_DRIVERCTL=$DRIVERCTL_RHEL10
+	export RPM_DRIVERCTL=$DRIVERCTL_RHEL9
 fi
 if [[ -z $RPM_OVS_TCPDUMP_PYTHON ]]; then
-	export RPM_OVS_TCPDUMP_PYTHON=$OVS350_PYTHON_25D_RHEL10
+	export RPM_OVS_TCPDUMP_PYTHON=$OVS360_PYTHON_2511_RHEL9
 fi
 if [[ -z $RPM_OVS_TCPDUMP_TEST ]]; then
-	export RPM_OVS_TCPDUMP_TEST=$OVS350_TCPDUMP_25D_RHEL10
+	export RPM_OVS_TCPDUMP_TEST=$OVS360_TCPDUMP_2511_RHEL9
 fi
 
 # RHEL composes
@@ -226,33 +226,33 @@ export SRC_NETPERF="http://netqe-infra01.knqe.eng.rdu2.dc.redhat.com/share/tools
 
 # VM image names
 if [[ -z $VM_IMAGE ]]; then
-	export VM_IMAGE="rhel10.qcow2"
+	export VM_IMAGE="rhel9.qcow2"
 else
 	export VM_IMAGE=$VM_IMAGE
 fi
 
 if [[ -z $VM_IMAGE_AARCH64 ]]; then
-	export VM_IMAGE_AARCH64="rhel10.aarch64.qcow2"
+	export VM_IMAGE_AARCH64="rhel9.aarch64.qcow2"
 else
 	export VM_IMAGE_AARCH64=$VM_IMAGE_AARCH64
 fi
 
 # OVS packages
 if [[ -z $RPM_OVS ]]; then
-	export RPM_OVS=$OVS350_25D_RHEL10
+	export RPM_OVS=$OVS360_2511_RHEL9
 else
 	export RPM_OVS=$RPM_OVS
 fi
 
 # SELinux packages
 if [[ -z $RPM_OVS_SELINUX_EXTRA_POLICY ]]; then
-	export RPM_OVS_SELINUX_EXTRA_POLICY=$OVS_SELINUX_25D_RHEL10
+	export RPM_OVS_SELINUX_EXTRA_POLICY=$OVS_SELINUX_2511_RHEL9
 else
 	export RPM_OVS_SELINUX_EXTRA_POLICY=$RPM_OVS_SELINUX_EXTRA_POLICY
 fi
 
 # OVN packages
-export RPM_OVN=$OVN350_25D_RHEL10 
+export RPM_OVN=$OVN360_2511_RHEL9 
 
 export BONDING_TESTS="ovs_test_bond_active_backup ovs_test_bond_set_active_slave ovs_test_bond_lacp_active ovs_test_bond_lacp_passive ovs_test_bond_balance_slb ovs_test_bond_balance_tcp"
 
@@ -272,8 +272,8 @@ export GRE_IPV6_TESTS="ovs_test_gre_ipv6 ovs_test_gre1_ipv6 ovs_test_gre_flow_ip
 #./test_exec_of_rules.sh
 
 # To run just the ovs_test_ns_enable_nomlockall_CPUAffinity_test for topo, add "cpu" to the string of arguments
-#./test_exec_topo.sh ixgbe ovs_env=kernel
-##./test_exec_topo.sh ixgbe ovs_env=ovs-dpdk
+./test_exec_topo.sh ixgbe ovs_env=kernel
+#./test_exec_topo.sh ixgbe ovs_env=ovs-dpdk
 #./test_exec_topo.sh i40e ovs_env=kernel
 ##./test_exec_topo.sh i40e ovs_env=ovs-dpdk
 #./test_exec_topo.sh e810_ice ovs_env=kernel
@@ -288,8 +288,8 @@ export GRE_IPV6_TESTS="ovs_test_gre_ipv6 ovs_test_gre1_ipv6 ovs_test_gre_flow_ip
 ##./test_exec_topo.sh e823_ice_bp ovs_env=ovs-dpdk
 #./test_exec_topo.sh e823_ice_sfp ovs_env=kernel
 ##./test_exec_topo.sh e823_ice_sfp ovs_env=ovs-dpdk
-./test_exec_topo.sh mlx5_core cx5 ovs_env=kernel
-#./test_exec_topo.sh mlx5_core cx5 ovs_env=ovs-dpdk
+#./test_exec_topo.sh mlx5_core cx5 ovs_env=kernel
+##./test_exec_topo.sh mlx5_core cx5 ovs_env=ovs-dpdk
 #./test_exec_topo.sh mlx5_core cx6 dx ovs_env=kernel
 ##./test_exec_topo.sh mlx5_core cx6 dx ovs_env=ovs-dpdk
 #./test_exec_topo.sh mlx5_core cx6 lx ovs_env=kernel
@@ -327,12 +327,12 @@ export GRE_IPV6_TESTS="ovs_test_gre_ipv6 ovs_test_gre1_ipv6 ovs_test_gre_flow_ip
 #./test_exec_endurance.sh bf3
 #./test_exec_perf_ci.sh bf3
 
-#./test_exec_topo.sh enic ovs_env=kernel
-##./test_exec_topo.sh enic ovs_env=ovs-dpdk
-#./test_exec_topo.sh qede ovs_env=kernel
-##./test_exec_topo.sh qede ovs_env=ovs-dpdk
-#./test_exec_topo.sh bnxt_en ovs_env=kernel
-##./test_exec_topo.sh bnxt_en ovs_env=ovs-dpdk
+./test_exec_topo.sh enic ovs_env=kernel
+#./test_exec_topo.sh enic ovs_env=ovs-dpdk
+./test_exec_topo.sh qede ovs_env=kernel
+#./test_exec_topo.sh qede ovs_env=ovs-dpdk
+./test_exec_topo.sh bnxt_en ovs_env=kernel
+#./test_exec_topo.sh bnxt_en ovs_env=ovs-dpdk
 #./test_exec_topo.sh nfp ovs_env=kernel
 ##./test_exec_topo.sh nfp ovs_env=ovs-dpdk
 

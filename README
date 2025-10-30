@@ -15,6 +15,9 @@ release such as RHEL CTC/RC test cycles, NIC or system certification testing,
 - Example: export COMPOSE=RHEL-9.4.0-updates-20251021.0
 
 - Optional:
+- Tests run in Image Mode by default.  To run in Package Mode: 
+export image_mode=no
+
 - Export OVS RPMs to be used if not using those specified in fdp_package_list.sh
 (see below)
 - Example: 
@@ -34,7 +37,7 @@ Current list of tests:
 
 test_exec_forward_bpdu.sh          
 test_exec_ovs_qos.sh            
-test_exec_topo.sh
+test_exec_topo.sh (see additional topo info below)
 test_exec_mcast_snoop.sh           
 test_exec_ovs_upgrade.sh        
 test_exec_vm100.sh
@@ -42,6 +45,35 @@ test_exec_of_rules.sh
 test_exec_power_cycle_crash.sh
 test_exec_ovs_memory_leak_soak.sh
 test_exec_sanity_check.sh
+
+### Additional info for running topo tests:
+	# Standard cards:	
+	test_exec_topo_e810_ice
+	test_exec_topo_i40e
+	test_exec_topo_mlx5_core_arm
+	test_exec_topo_mlx5_core_cx5
+	test_exec_topo_mlx5_core_cx6_dx
+	test_exec_topo_mlx5_core_cx6_lx
+	test_exec_topo_mlx5_core_bf2
+	test_exec_topo_mlx5_core_cx7
+	test_exec_topo_ice_sts
+
+	# Sanity only cards (bare metal only):
+	test_exec_topo_enic
+	test_exec_topo_qede
+	test_exec_topo_bnxt_en
+	test_exec_topo_ixgbe
+	
+	# Special "one-off" cards (certification testing, etc.):	
+	test_exec_topo_e830_ice
+	test_exec_topo_e825_ice
+	test_exec_topo_e810_ice_bp
+	test_exec_topo_e823_ice_bp
+	test_exec_topo_e823_ice_sfp
+	test_exec_topo_i40e_t4l
+	test_exec_topo_empire
+	test_exec_topo_6820c
+	test_exec_topo_bmc57504
 
 Other files:
 

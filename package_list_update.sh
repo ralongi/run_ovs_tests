@@ -24,9 +24,16 @@ new_package_list_file="$script_directory/new_package_list.sh"
 fdp_errata_list_file=$script_directory/errata_list.txt
 package_list_file=~/package_list.txt
 upload_package_file=${upload_package_file:-"yes"}
+errata_list=${errata_list:-""}
 
-batch=$(curl -su : --negotiate https://errata.devel.redhat.com/advisory/filters/4400 | grep "$fdp_release" |awk -F '"' '{print $4}' | awk -F '/' '{print $NF}' | head -1)
-errata_list=$(curl -su : --negotiate https://errata.devel.redhat.com/api/v1/batches/$batch | jq | grep id | awk '{print $NF}' | grep -v ,)
+if [[ -z "$errata_list" ]]; then
+	rm -f ./batches.txt && touch ./batches.txt
+	batches=$(curl -su : --negotiate https://errata.devel.redhat.com/advisory/filters/4400 | grep "$fdp_release" |awk -F '"' '{print $4}' | awk -F '/' '{print $NF}' | sort -u)
+	for i in $batches; do
+		curl -su : --negotiate https://errata.devel.redhat.com/api/v1/batches/$i | jq | grep id | awk '{print $NF}' | grep -v , >> ./batches.txt
+	done
+	errata_list=$(cat ./batches.txt)
+fi
 
 sedeasy ()
 {
@@ -113,20 +120,20 @@ fi
 cat $new_package_list_file >> $package_file
 
 # copy updated fdp_package_list.sh file to infra01
-rpm -q nfs-utils || sudo dnf -y install nfs-utils
-mount | grep 'netqe-infra01.knqe.eng.rdu2.dc.redhat.com:/home/www/html/share'
-if [[ $? -eq 0 ]]; then
-	share_dir=$(mount | grep 'netqe-infra01.knqe.eng.rdu2.dc.redhat.com:/home/www/html/share' | awk '{print $3}')
-else
-	mkdir ~/infra01_share/
-	sudo mount netqe-infra01.knqe.eng.rdu2.dc.redhat.com:/home/www/html/share ~/infra01_share/
-	wait
-	share_dir=$(mount | grep 'netqe-infra01.knqe.eng.rdu2.dc.redhat.com:/home/www/html/share' | awk '{print $3}')
-fi
+#rpm -q nfs-utils || sudo dnf -y install nfs-utils
+#mount | grep 'netqe-infra01.knqe.eng.rdu2.dc.redhat.com:/home/www/html/share'
+#if [[ $? -eq 0 ]]; then
+#	share_dir=$(mount | grep 'netqe-infra01.knqe.eng.rdu2.dc.redhat.com:/home/www/html/share' | awk '{print $3}')
+#else
+#	mkdir ~/infra01_share/
+#	sudo mount netqe-infra01.knqe.eng.rdu2.dc.redhat.com:/home/www/html/share ~/infra01_share/
+#	wait
+#	share_dir=$(mount | grep 'netqe-infra01.knqe.eng.rdu2.dc.redhat.com:/home/www/html/share' | awk '{print $3}')
+#fi
 
-/bin/cp -f $package_file "$share_dir"/misc
+#/bin/cp -f $package_file "$share_dir"/misc
 
-rm -f $new_package_template_file $new_package_list_temp_file $new_package_list_file $fdp_errata_list_file $package_list_file
+rm -f $new_package_template_file $new_package_list_temp_file $new_package_list_file $fdp_errata_list_file $package_list_file batches.txt
 
 popd &>/dev/null
 popd &>/dev/null
