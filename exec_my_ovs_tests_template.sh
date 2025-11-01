@@ -232,7 +232,7 @@ else
 fi
 
 if [[ -z $VM_IMAGE_AARCH64 ]]; then
-	export VM_IMAGE_AARCH64="rhelRHEL_VER_VALUE.aarch64.qcow2"
+	export VM_IMAGE_AARCH64="rhelRHEL_VER_VALUE.aarch64.64k.qcow2"
 else
 	export VM_IMAGE_AARCH64=$VM_IMAGE_AARCH64
 fi
