@@ -129,10 +129,10 @@ if [[ -z $RPM_DRIVERCTL ]]; then
 	export RPM_DRIVERCTL=$DRIVERCTL_RHEL10
 fi
 if [[ -z $RPM_OVS_TCPDUMP_PYTHON ]]; then
-	export RPM_OVS_TCPDUMP_PYTHON=$OVS350_PYTHON_2511_RHEL10
+	export RPM_OVS_TCPDUMP_PYTHON=$OVS360_PYTHON_2511_RHEL10
 fi
 if [[ -z $RPM_OVS_TCPDUMP_TEST ]]; then
-	export RPM_OVS_TCPDUMP_TEST=$OVS350_TCPDUMP_2511_RHEL10
+	export RPM_OVS_TCPDUMP_TEST=$OVS360_TCPDUMP_2511_RHEL10
 fi
 
 # RHEL composes
@@ -239,7 +239,7 @@ fi
 
 # OVS packages
 if [[ -z $RPM_OVS ]]; then
-	export RPM_OVS=$OVS350_2511_RHEL10
+	export RPM_OVS=$OVS360_2511_RHEL10
 else
 	export RPM_OVS=$RPM_OVS
 fi
@@ -252,7 +252,7 @@ else
 fi
 
 # OVN packages
-export RPM_OVN=$OVN350_2511_RHEL10 
+export RPM_OVN=$OVN360_2511_RHEL10 
 
 export BONDING_TESTS="ovs_test_bond_active_backup ovs_test_bond_set_active_slave ovs_test_bond_lacp_active ovs_test_bond_lacp_passive ovs_test_bond_balance_slb ovs_test_bond_balance_tcp"
 
@@ -276,14 +276,14 @@ export GRE_IPV6_TESTS="ovs_test_gre_ipv6 ovs_test_gre1_ipv6 ovs_test_gre_flow_ip
 ##./test_exec_topo.sh ixgbe ovs_env=ovs-dpdk
 #./test_exec_topo.sh i40e ovs_env=kernel
 ##./test_exec_topo.sh i40e ovs_env=ovs-dpdk
-./test_exec_topo.sh e810_ice ovs_env=kernel
-#./test_exec_topo.sh e810_ice ovs_env=ovs-dpdk
+#./test_exec_topo.sh e810_ice ovs_env=kernel
+##./test_exec_topo.sh e810_ice ovs_env=ovs-dpdk
 #./test_exec_topo.sh e830_ice ovs_env=kernel
 ##./test_exec_topo.sh e830_ice ovs_env=ovs-dpdk
 #./test_exec_topo.sh e825_ice ovs_env=kernel
 ##./test_exec_topo.sh e825_ice ovs_env=ovs-dpdk
-./test_exec_topo.sh e810_ice_bp ovs_env=kernel
-#./test_exec_topo.sh e810_ice_bp ovs_env=ovs-dpdk
+#./test_exec_topo.sh e810_ice_bp ovs_env=kernel
+##./test_exec_topo.sh e810_ice_bp ovs_env=ovs-dpdk
 #./test_exec_topo.sh e823_ice_bp ovs_env=kernel
 ##./test_exec_topo.sh e823_ice_bp ovs_env=ovs-dpdk
 #./test_exec_topo.sh e823_ice_sfp ovs_env=kernel
@@ -336,7 +336,7 @@ export GRE_IPV6_TESTS="ovs_test_gre_ipv6 ovs_test_gre1_ipv6 ovs_test_gre_flow_ip
 #./test_exec_topo.sh nfp ovs_env=kernel
 ##./test_exec_topo.sh nfp ovs_env=ovs-dpdk
 
-#./test_exec_ovs_memory_leak_soak.sh
+./test_exec_ovs_memory_leak_soak.sh
 #./test_exec_ovn_memory_leak_soak.sh
 
 #./test_exec_regression_bug.sh
