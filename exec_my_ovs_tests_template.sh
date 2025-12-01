@@ -370,7 +370,11 @@ export GRE_IPV6_TESTS="ovs_test_gre_ipv6 ovs_test_gre1_ipv6 ovs_test_gre_flow_ip
 # xena_conntrack/xena_dpdk
 #./test_exec_xena_dpdk.sh
 
-#echo "FDP_STREAM2 is now set to $FDP_STREAM2"
+if [[ -z $RPM_OVS ]]; then RPM_OVS="Latest available shipping version"; fi
+if [[ -z $RPM_OVN_CENTRAL ]]; then RPM_OVN_CENTRAL="Latest available shipping version"; fi
+if [[ -z $RPM_OVN_HOST ]]; then RPM_OVN_HOST="Latest available shipping version"; fi
+if [[ -z $RPM_OVN_COMMON ]]; then RPM_OVN_COMMON="Latest available shipping version"; fi
+
 echo "COMPOSE is: $COMPOSE"
 echo "FDP Release is: $FDP_RELEASE"
 echo "FDP Stream is: $FDP_STREAM"
@@ -378,7 +382,5 @@ echo "RPM_OVS: $RPM_OVS"
 echo "RPM_OVN_CENTRAL: $RPM_OVN_CENTRAL"
 echo "RPM_OVN_HOST: $RPM_OVN_HOST"
 echo "RPM_OVN_COMMON: $RPM_OVN_COMMON"
-echo "RPM_OVN_CENTRAL: $RPM_OVN_CENTRAL"
-echo "RPM_OVN_HOST: $RPM_OVN_HOST"
 
 popd &>/dev/null

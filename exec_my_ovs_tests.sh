@@ -129,10 +129,10 @@ if [[ -z $RPM_DRIVERCTL ]]; then
 	export RPM_DRIVERCTL=$DRIVERCTL_RHEL10
 fi
 if [[ -z $RPM_OVS_TCPDUMP_PYTHON ]]; then
-	export RPM_OVS_TCPDUMP_PYTHON=$OVS360_PYTHON_OVS-2511_RHEL10
+	export RPM_OVS_TCPDUMP_PYTHON=$OVS_PYTHON_Not Specified_RHEL10
 fi
 if [[ -z $RPM_OVS_TCPDUMP_TEST ]]; then
-	export RPM_OVS_TCPDUMP_TEST=$OVS360_TCPDUMP_OVS-2511_RHEL10
+	export RPM_OVS_TCPDUMP_TEST=$OVS_TCPDUMP_Not Specified_RHEL10
 fi
 
 # RHEL composes
@@ -239,20 +239,20 @@ fi
 
 # OVS packages
 if [[ -z $RPM_OVS ]]; then
-	export RPM_OVS=$OVS360_OVS-2511_RHEL10
+	export RPM_OVS=$OVS_Not Specified_RHEL10
 else
 	export RPM_OVS=$RPM_OVS
 fi
 
 # SELinux packages
 if [[ -z $RPM_OVS_SELINUX_EXTRA_POLICY ]]; then
-	export RPM_OVS_SELINUX_EXTRA_POLICY=$OVS_SELINUX_OVS-2511_RHEL10
+	export RPM_OVS_SELINUX_EXTRA_POLICY=$OVS_SELINUX_Not Specified_RHEL10
 else
 	export RPM_OVS_SELINUX_EXTRA_POLICY=$RPM_OVS_SELINUX_EXTRA_POLICY
 fi
 
 # OVN packages
-export RPM_OVN=$OVN360_OVS-2511_RHEL10 
+export RPM_OVN=$OVN_Not Specified_RHEL10 
 
 export BONDING_TESTS="ovs_test_bond_active_backup ovs_test_bond_set_active_slave ovs_test_bond_lacp_active ovs_test_bond_lacp_passive ovs_test_bond_balance_slb ovs_test_bond_balance_tcp"
 
@@ -370,7 +370,11 @@ export GRE_IPV6_TESTS="ovs_test_gre_ipv6 ovs_test_gre1_ipv6 ovs_test_gre_flow_ip
 # xena_conntrack/xena_dpdk
 #./test_exec_xena_dpdk.sh
 
-#echo "FDP_STREAM2 is now set to $FDP_STREAM2"
+if [[ -z $RPM_OVS ]]; then RPM_OVS="Latest available shipping version"; fi
+if [[ -z $RPM_OVN_CENTRAL ]]; then RPM_OVN_CENTRAL="Latest available shipping version"; fi
+if [[ -z $RPM_OVN_HOST ]]; then RPM_OVN_HOST="Latest available shipping version"; fi
+if [[ -z $RPM_OVN_COMMON ]]; then RPM_OVN_COMMON="Latest available shipping version"; fi
+
 echo "COMPOSE is: $COMPOSE"
 echo "FDP Release is: $FDP_RELEASE"
 echo "FDP Stream is: $FDP_STREAM"
@@ -378,7 +382,5 @@ echo "RPM_OVS: $RPM_OVS"
 echo "RPM_OVN_CENTRAL: $RPM_OVN_CENTRAL"
 echo "RPM_OVN_HOST: $RPM_OVN_HOST"
 echo "RPM_OVN_COMMON: $RPM_OVN_COMMON"
-echo "RPM_OVN_CENTRAL: $RPM_OVN_CENTRAL"
-echo "RPM_OVN_HOST: $RPM_OVN_HOST"
 
 popd &>/dev/null

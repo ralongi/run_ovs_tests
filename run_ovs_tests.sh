@@ -32,8 +32,6 @@ if [[ $check_args != "no" ]]; then
 	if [[ $# -lt 3 ]] || [[ $1 = "-h" ]] || [[ $1 = "--help" ]]	|| [[ $1 = "-?" ]]; then
 		display_usage
 	fi
-else
-	export RHEL_VER=$(echo $COMPOSE | awk -F '-' '{print $2}' | awk -F '.' '{print $1"."$2}') 
 fi
 
 if [[ -z $tests ]]; then
@@ -67,12 +65,19 @@ if [[ $check_args != "no" ]]; then
 
 	export FDP_STREAM=${FDP_STREAM:-"$3"}
 	export FDP_STREAM2=$(echo $FDP_STREAM | tr -d '.')
-	if [[ $FDP_STREAM2 -gt 213 ]]; then
-		YEAR=$(grep -i ovn fdp_package_list.sh | grep $FDP_RELEASE | awk -F "_" '{print $3}' | grep -v 213 | tail -n1)
-	fi
 else
-	export RHEL_VER=$(echo $COMPOSE | awk -F '-' '{print $2}')
-	export RHEL_VER_MAJOR=$(echo $RHEL_VER | awk -F "." '{print $1}')
+	if [[ -z $FDP_RELEASE ]]; then export FDP_RELEASE="Not Specified"; fi
+	if [[ -z $RHEL_VER ]]; then
+		export RHEL_VER=$(echo $COMPOSE | awk -F '-' '{print $2}')
+		export RHEL_VER_MAJOR=$(echo $RHEL_VER | awk -F "." '{print $1}')
+	fi
+	if [[ -z $FDP_STREAM ]]; then
+		if [[ $RPM_OVS ]]; then
+			export FDP_STREAM=$(basename $RPM_OVS | awk -F '-' '{print $1}' | sed 's/openvswitch//'g)
+		else
+			export FDP_STREAM="Not Specified"
+		fi
+	fi
 fi
 
 pushd "$GITHUB_HOME"/run_ovs_tests &>/dev/null
@@ -266,7 +271,3 @@ done
 ./exec_my_ovs_tests.sh
 
 popd &>/dev/null
-
-echo "FDP_RELEASE: $FDP_RELEASE"
-echo "RHEL_VER_MAJOR: $RHEL_VER_MAJOR"
-echo "FDP_STREAM2: $FDP_STREAM2"
