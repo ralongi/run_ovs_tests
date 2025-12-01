@@ -70,6 +70,9 @@ if [[ $check_args != "no" ]]; then
 	if [[ $FDP_STREAM2 -gt 213 ]]; then
 		YEAR=$(grep -i ovn fdp_package_list.sh | grep $FDP_RELEASE | awk -F "_" '{print $3}' | grep -v 213 | tail -n1)
 	fi
+else
+	export RHEL_VER=$(echo $COMPOSE | awk -F '-' '{print $2}')
+	export RHEL_VER_MAJOR=$(echo $RHEL_VER | awk -F "." '{print $1}')
 fi
 
 pushd "$GITHUB_HOME"/run_ovs_tests &>/dev/null
