@@ -265,10 +265,10 @@ export GRE_IPV6_TESTS="ovs_test_gre_ipv6 ovs_test_gre1_ipv6 ovs_test_gre_flow_ip
 #./test_exec_ovs_upgrade.sh
 #./test_exec_sanity_check.sh
 #./test_exec_vm100.sh
-./test_exec_ovs_qos.sh
+#./test_exec_ovs_qos.sh
 #./test_exec_mcast_snoop.sh
 #./test_exec_power_cycle_crash.sh
-#./test_exec_forward_bpdu.sh
+./test_exec_forward_bpdu.sh
 #./test_exec_of_rules.sh
 
 # To run just the ovs_test_ns_enable_nomlockall_CPUAffinity_test for topo, add "cpu" to the string of arguments
