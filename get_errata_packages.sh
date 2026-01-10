@@ -22,7 +22,7 @@ while getopts "he:f:a:" arg; do
     a) # Specify an arch (default is x86_64). Example: -a aarch64
       arch=${OPTARG}
       ;;
-    h) # Display help.
+    h) # Display help
       usage
       ;;
   esac
