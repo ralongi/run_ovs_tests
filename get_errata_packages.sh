@@ -56,8 +56,8 @@ for i in $errata_list; do
 	echo "#########################################################################" >> $package_list_file
 	echo "" >> $package_list_file
 	echo "Errata: https://errata.devel.redhat.com/advisory/$i" >> $package_list_file
-	echo "Package List:" >> $package_list_file
-
+	echo "Complete package list for errata $i:" >> $package_list_file
+	echo "" >> $package_list_file
 	curl -su : --negotiate https://errata.devel.redhat.com/api/v1/erratum/$i/builds | jq > ~/builds.txt
 	build_id=$(grep "id" ~/builds.txt | awk '{print $NF}' | tr -d ,)
 	curl -su : --negotiate https://brewweb.engineering.redhat.com/brew/buildinfo?buildID=$build_id > ~/builds2.txt
@@ -65,12 +65,11 @@ for i in $errata_list; do
 		echo "" >> $package_list_file		
 		echo "It appears that the $arch arch is not available" >> $package_list_file
 	else
-		echo "" >> $package_list_file
 		grep $arch.rpm ~/builds2.txt | awk -F '"' '{print $4}' >> $package_list_file
 		grep noarch.rpm ~/builds2.txt | awk -F '"' '{print $4}' >> $package_list_file
 	fi
  	rm -f ~/builds.txt ~/builds2.txt
 done
+#echo "" >> $package_list_file
 
-echo ""
 cat $package_list_file

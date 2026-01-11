@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 
 # Script to update fdp_package_list.sh which is mainly used by kernel/networking/openvswitch/ovs_upgrade
 
@@ -8,9 +8,9 @@ $dbg_flag
 github_home=${github_home:-~/github}
 script_directory="$github_home"/run_ovs_tests
 fdp_release=$1
-if [[ $# -lt 1 ]]; then echo "Please provide FDP release designation without 'OVS' (25.10, 25.11, etc):"; read fdp_release; fi
+if [[ $# -lt 1 ]]; then echo "Please provide FDP release designation:"; read fdp_release; fi
 #fdp_release=$(echo "$fdp_release" | awk '{print toupper($0)}')
-echo "FDP Release: OVS-$fdp_release"
+echo "FDP Release: $fdp_release"
 
 if [[ ! $(echo "$fdp_release" | grep '\.') ]]; then
 	echo "Please include the period in the FDP release designation without 'FDP' (25.C, 25.c, etc)"
@@ -29,12 +29,25 @@ update_fdp_package_list=${update_fdp_package_list:-"no"}
 
 if [[ -z "$errata_list" ]]; then
 	rm -f ./batches.txt && touch ./batches.txt
-	batches=$(curl -su : --negotiate https://errata.devel.redhat.com/advisory/filters/4400 | grep "$fdp_release" |awk -F '"' '{print $4}' | awk -F '/' '{print $NF}' | sort -u)
-	for i in $batches; do
-		curl -su : --negotiate https://errata.devel.redhat.com/api/v1/batches/$i | jq | grep id | awk '{print $NF}' | grep -v , >> ./batches.txt
-	done
-	errata_list=$(cat ./batches.txt)
+	if [[ $(curl -su : --negotiate https://errata.devel.redhat.com/advisory/filters/4400 | grep "$fdp_release" | grep batches) ]]; then
+		batches=$(curl -su : --negotiate https://errata.devel.redhat.com/advisory/filters/4400 | grep "$fdp_release" | awk -F '"' '{print $4}' | awk -F '/' '{print $NF}' | sort -u)
+		for i in $batches; do
+			curl -su : --negotiate https://errata.devel.redhat.com/api/v1/batches/$i | jq | grep id | awk '{print $NF}' | grep -v , >> ./batches.txt
+		done
+		errata_list=$(cat ./batches.txt)
+	elif [[ $(curl -su : --negotiate https://errata.devel.redhat.com/advisory/filters/4400 | grep "$fdp_release" | grep advisory) ]]; then
+		count=$(curl -su : --negotiate https://errata.devel.redhat.com/advisory/filters/4400 | grep "$fdp_release" | grep advisory | wc -l)
+		while [[ $count -gt 0 ]]; do
+			errata_id=$(curl -su : --negotiate https://errata.devel.redhat.com/advisory/filters/4400 | grep "$fdp_release" | grep advisory | tail -$count | head -1 | awk -F 'advisory' '{print $NF}' | awk -F '"' '{print $1}' | tr -d /)
+			errata_list+=" $errata_id"		
+			let count--
+		done
+	else
+		echo "No erratas match the query for $fdp_release"
+	fi
 fi
+
+echo "Errata list: $(echo $errata_list)"
 
 sedeasy ()
 {
@@ -47,7 +60,7 @@ if [[ "$package_type" == "OVS" ]]; then
 	echo "# $fdp_release Packages" >> $new_package_list_file
 fi
 
-pushd $script_directory
+pushd $script_directory &>/dev/null
 
 selinux_version=$(curl -sL https://download.devel.redhat.com/brewroot/packages/openvswitch-selinux-extra-policy/1.0/ | grep el7 | tail -n1 | awk -F '>' '{print $6}' | awk -F '"' '{print $2}' | tr -d /)
 package_url=https://download.devel.redhat.com/brewroot/packages/openvswitch-selinux-extra-policy/1.0/$selinux_version/noarch/openvswitch-selinux-extra-policy-1.0-$selinux_version.noarch.rpm
@@ -87,6 +100,8 @@ for i in $errata_list; do
 		package_url=$(grep packages $package_list_file | egrep -v '\-devel|ipsec|python|debug|test|scripts')
 		python_package_url=$(grep packages $package_list_file | grep python | egrep -v 'debug')
 		tcpdump_package_url=$(grep packages $package_list_file | grep 'noarch')
+		echo "List of openvswitch, python3-openvswitch and openvswitch tcpdump packages for errata $i:"
+		echo ""
 		echo "OVS package URL: $package_url"
 		echo "OVS Python package URL: $python_package_url"
 		echo "OVS tcpdump package URL: $tcpdump_package_url"		
@@ -104,9 +119,11 @@ for i in $errata_list; do
 		ovn_common_package_url=$(grep packages $package_list_file | egrep -v '\-devel|central|host|vtep|debug')
 		ovn_central_package_url=$(grep packages $package_list_file | grep central | egrep -v '\-devel|debug')
 		ovn_host_package_url=$(grep packages $package_list_file | grep host | egrep -v '\-devel|debug')
-		echo "OVS common package URL: $ovn_common_package_url"
-		echo "OVS central package URL: $ovn_central_package_url"
-		echo "OVS host package URL: $ovn_host_package_url"
+		echo "List of ovn-common, ovn-central and ovn-host packages for errata $i:"
+		echo ""
+		echo "OVN common package URL: $ovn_common_package_url"
+		echo "OVN central package URL: $ovn_central_package_url"
+		echo "OVN host package URL: $ovn_host_package_url"
 		
 		# Steps below used for populating fdp_package_list.sh which may not be necessary
 		if [[ $update_fdp_package_list == "yes" ]]; then
@@ -155,5 +172,4 @@ fi
 
 rm -f $new_package_template_file $new_package_list_temp_file $new_package_list_file $fdp_errata_list_file $package_list_file batches.txt
 
-popd &>/dev/null
 popd &>/dev/null
