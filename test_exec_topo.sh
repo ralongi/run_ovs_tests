@@ -54,6 +54,7 @@ else
 fi
 
 arch_test=${arch_test:-"x86_64"}
+
 RPM_OVS_AARCH64=${RPM_OVS_AARCH64:-$(echo $RPM_OVS | sed 's/x86_64/aarch64/g')}
 RPM_OVS_TCPDUMP_PYTHON_AARCH64=${RPM_OVS_TCPDUMP_PYTHON_AARCH64:-$(echo $RPM_OVS_TCPDUMP_PYTHON | sed 's/x86_64/aarch64/g')}
 
@@ -247,7 +248,7 @@ elif [[ "$driver" == "mlx5_core" ]] && [[ -z "$mlx_card_type" ]]; then
 		client_nic_test="enp4s0f0"
 	fi
 	
-### ARM aarch64 tests with Netscout
+### ARM aarch64
 elif [[ "$driver" == "mlx5_core_arm" ]]; then
 	mlx_card_type="CX6-DX"
 	client="netqe49.knqe.eng.rdu2.dc.redhat.com" # ARM system
@@ -434,6 +435,9 @@ fi
 # OR use link with runtest: -B 49363943 or --Brew=49363943
 
 #	cat ovs.list | egrep "openvswitch/topo" | runtest --task-fetch-url /distribution/check-install@ --fetch-url kernel@https://gitlab.cee.redhat.com/kernel-qe/kernel/-/archive/master/kernel-master.tar.bz2 $COMPOSE --product=$product --retention-tag=$retention_tag --machine=$server,$client -B $brew_build --systype=machine,machine  --param=dbg_flag="$dbg_flag" --param=OVS_TOPO=$OVS_TOPO --param=selinux_enable=$selinux_enable --param=NAY=$NAY --param=GUEST_TYPE=$GUEST_TYPE --param=PVT=$PVT --param=image_name=$image_name --param=SRC_NETPERF=$SRC_NETPERF --param=RPM_OVS_SELINUX_EXTRA_POLICY=$RPM_OVS_SELINUX_EXTRA_POLICY_RHEL8 --param=RPM_OVS=$RPM_OVS $(echo $extra_packages) --param=OVS_SKIP_CLEANUP_ENV=yes --param=OVS_SKIP="$OVS_SKIP_TESTS" --param=netscout_pair1="$netscout_pair1" --param=netscout_pair2="$netscout_pair2" --param=mh-NIC_DRIVER=$server_driver,$client_driver --wb "FDP $FDP_RELEASE, $ovs_rpm_name, $COMPOSE, openvswitch/topo, Client driver: $client_driver, Server driver: $server_driver, Driver under test: $client_driver ($mlx_card_type), ovs_env: $ovs_env, OVS_TOPO: $OVS_TOPO $special_info" --append-task="/kernel/networking/openvswitch/crash_check {dbg_flag=set -x}"
+
+if [[ $client == netqe49.knqe.eng.rdu2.dc.redhat.com ]]; then arch_test="aarch64"; fi 
+echo "arch_test is: $arch_test"
 
 if [[ "$arch_test" == "x86_64" ]]; then
 	if [[ $image_mode == "yes" ]]; then
