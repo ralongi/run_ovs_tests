@@ -296,7 +296,7 @@ export GRE_IPV6_TESTS="ovs_test_gre_ipv6 ovs_test_gre1_ipv6 ovs_test_gre_flow_ip
 ##./test_exec_topo.sh mlx5_core cx6 lx ovs_env=ovs-dpdk
 #./test_exec_topo.sh arm ovs_env=kernel
 
-./test_exec_topo.sh mlx5_core_arm cx7 ovs_env=kernel
+#./test_exec_topo.sh mlx5_core_arm cx7 ovs_env=kernel
 
 ##./test_exec_topo.sh arm ovs_env=ovs-dpdk
 #./test_exec_topo.sh mlx5_core cx7 ovs_env=kernel
@@ -336,7 +336,7 @@ export GRE_IPV6_TESTS="ovs_test_gre_ipv6 ovs_test_gre1_ipv6 ovs_test_gre_flow_ip
 #./test_exec_topo.sh nfp ovs_env=kernel
 ##./test_exec_topo.sh nfp ovs_env=ovs-dpdk
 
-#./test_exec_ovs_memory_leak_soak.sh
+./test_exec_ovs_memory_leak_soak.sh
 #./test_exec_ovn_memory_leak_soak.sh
 
 #./test_exec_regression_bug.sh
